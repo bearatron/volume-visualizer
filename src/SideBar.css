@@ -1,0 +1,22 @@
+.sidebar {
+  box-sizing: border-box;
+  width: 1000px;
+  background-color: aliceblue;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-group {
+  height: 2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#equation-input {
+  height: 1.5rem;
+}
