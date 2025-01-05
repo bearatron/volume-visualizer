@@ -1,0 +1,26 @@
+.input-group {
+  width: 100%;
+  height: 2rem;
+  display: flex;
+  flex-direction: row;
+  /* gap: 10px; */
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.math-input {
+  /* width: 100%; */
+  max-width: 100%;
+  /* text-overflow: clip;
+  overflow: scroll; */
+  /* resize: none; */
+}
+
+.error-container {
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #ffe2e2;
+  color: #ef0000;
+  padding: 10px;
+  border-radius: 5px;
+}
