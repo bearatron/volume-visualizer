@@ -1,0 +1,8 @@
+.error-container {
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #ffe2e2;
+  color: #ef0000;
+  padding: 10px;
+  border-radius: 5px;
+}
