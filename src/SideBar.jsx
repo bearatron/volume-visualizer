@@ -82,8 +82,32 @@ export default function SideBar() {
         />
       </div>
       <ErrorContainer>{funcError}</ErrorContainer>
+
+      <p>
+        Get the area between{" "}
+        <span>
+          <StaticMathField>{"\\f(x)"}</StaticMathField>
+        </span>{" "}
+        and ...
+      </p>
+      <div className="radio-choices">
+        <div>
+          <input type="radio" name="second-graph" id="axis-of-rotation" />
+          <label for="axis-of-rotation">axis of rotation</label>
+        </div>
+        <div>
+          <input type="radio" name="second-graph" id="custom-function" />
+          <label for="custom-function">custom function</label>
+        </div>
+        <div className="input-group">
+          <StaticMathField>{"g(x)\\space=\\space"}</StaticMathField>
+
+          <EditableMathField latex="" />
+        </div>
+      </div>
+
       <div className="input-group">
-        <StaticMathField>{"a\\space=\\space"}</StaticMathField>
+        <StaticMathField>{"x_0\\space=\\space"}</StaticMathField>
         <EditableMathField
           latex={lowerBound}
           className="math-input"
@@ -94,7 +118,7 @@ export default function SideBar() {
       </div>
       <ErrorContainer>{lowerBoundError}</ErrorContainer>
       <div className="input-group">
-        <StaticMathField>{"b\\space=\\space"}</StaticMathField>
+        <StaticMathField>{"x_1\\space=\\space"}</StaticMathField>
         <EditableMathField
           latex={upperBound}
           className="math-input"
