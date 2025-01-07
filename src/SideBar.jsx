@@ -19,8 +19,10 @@ export default function SideBar() {
   const [customFunc, setCustomFunc] = useState(""); // latex string (with x as variable)
   const [customFuncError, setCustomFuncError] = useState("");
 
-  const rotationOptions = ["x axis", "y axis"];
-  const [axisOfRotation, setAxisOfRotation] = useState(rotationOptions[0]);
+  const axisOfRotationOptions = ["x axis", "y axis"];
+  const [axisOfRotation, setAxisOfRotation] = useState(
+    axisOfRotationOptions[0]
+  );
 
   const [lowerBound, setLowerBound] = useState(""); // latex string (no variables)
   const [lowerBoundError, setLowerBoundError] = useState("");
@@ -58,47 +60,92 @@ export default function SideBar() {
 
     // setAnsText(mathJSAns.toString());
 
-    validateFunc();
-    validateSecondFuncChoice();
-    validateCustomFunc();
-    validateAxisOfRotation();
-    validateLowerBound();
-    validateUpperBound();
+    let errorInInput = errorInFunc() || errorInCustomFunc() || errorInBounds();
+
+    if (errorInInput) {
+      console.warn("There is at least 1 error");
+      // don't send to scene component
+    }
   }
 
-  function validateFunc() {}
-  function validateSecondFuncChoice() {}
-  function validateCustomFunc() {}
-  function validateAxisOfRotation() {}
-  function validateLowerBound() {
+  function errorInFunc() {
+    let errorInInput = false;
+
+    try {
+      if (func.length === 0) {
+        throw new Error("Field cannot be empty");
+      }
+    } catch (error) {
+      console.error(error);
+      setFuncError(error.message);
+      errorInInput = true;
+    }
+
+    return errorInInput;
+  }
+  function errorInCustomFunc() {
+    let errorInInput = false;
+
+    try {
+      if (customFunc.length === 0 && secondFuncChoice === CUSTOM_FUNCTION) {
+        throw new Error("Field cannot be empty");
+      }
+    } catch (error) {
+      console.error(error);
+      setCustomFuncError(error.message);
+      errorInInput = true;
+    }
+
+    return errorInInput;
+  }
+
+  function errorInBounds() {
+    let lowerBoundVal;
+    let upperBoundVal;
+    let errorInInput = false;
+
     try {
       if (lowerBound.length === 0) {
         throw new Error("Field cannot be empty");
       }
 
-      const lowerBoundNode = parseTex(lowerBound);
-      const lowerBoundVal = lowerBoundNode.compile().evaluate();
+      lowerBoundVal = parseTex(lowerBound).compile().evaluate();
+
+      if (typeof lowerBoundVal !== "number") {
+        throw new Error("Please enter a real number");
+      }
     } catch (error) {
       console.error(error);
-      console.log(error.message);
       setLowerBoundError(error.message);
-      return;
+      errorInInput = true;
+      return errorInInput;
     }
-  }
-  function validateUpperBound() {
-    const lowerBoundNode = parseTex(lowerBound);
-    const upperBoundNode = parseTex(upperBound);
-    const lowerBoundVal = lowerBoundNode.compile().evaluate();
-    const upperBoundVal = upperBoundNode.compile().evaluate();
 
-    // console.log(`lower bound: ${lowerBoundVal}`);
-    // console.log(`upper bound: ${upperBoundVal}`);
+    try {
+      if (upperBound.length === 0) {
+        throw new Error("Field cannot be empty");
+      }
 
-    // console.log(typeof lowerBoundVal);
-    // console.log(upperBound < lowerBound);
-    // if (upperBound < lowerBound) {
-    //   setUpperBoundError("Upper bound cannot be greater than lower bound");
-    // }
+      upperBoundVal = parseTex(upperBound).compile().evaluate();
+
+      if (typeof lowerBoundVal !== "number") {
+        throw new Error("Please enter a real number");
+      }
+
+      if (upperBoundVal < lowerBoundVal) {
+        throw new Error("Upper bound cannot be less than lower bound");
+      }
+
+      if (upperBoundVal === lowerBoundVal) {
+        throw new Error("Upper and lower bounds cannot be equal");
+      }
+    } catch (error) {
+      console.error(error);
+      setUpperBoundError(error.message);
+      errorInInput = true;
+    }
+
+    return errorInInput;
   }
 
   function handleVarChange(mathField) {
@@ -201,20 +248,22 @@ export default function SideBar() {
           </div>
 
           {secondFuncChoice === CUSTOM_FUNCTION ? (
-            <div className="input-group">
-              <StaticMathField>{"g(x)\\space=\\space"}</StaticMathField>
+            <>
+              <div className="input-group">
+                <StaticMathField>{"g(x)\\space=\\space"}</StaticMathField>
 
-              <EditableMathField
-                latex={customFunc}
-                onChange={(mathField) => {
-                  setCustomFunc(mathField.latex());
-                }}
-              />
-            </div>
+                <EditableMathField
+                  latex={customFunc}
+                  onChange={(mathField) => {
+                    setCustomFunc(mathField.latex());
+                  }}
+                />
+              </div>
+              <ErrorContainer message={customFuncError} />
+            </>
           ) : (
             <></>
           )}
-          <ErrorContainer message={customFuncError} />
         </div>
       </div>
 
@@ -228,7 +277,7 @@ export default function SideBar() {
             name="axis"
             id="axis-select"
           >
-            {rotationOptions.map((option, idx) => (
+            {axisOfRotationOptions.map((option, idx) => (
               <option key={idx}>{option}</option>
             ))}
           </select>
