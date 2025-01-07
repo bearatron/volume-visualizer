@@ -27,10 +27,6 @@
   /* resize: none; */
 }
 
-#equation-input {
-  height: 1.5rem;
-}
-
 .radio-choices {
   margin: 0;
   padding: 0;
@@ -39,7 +35,7 @@
   /* gap: 10px; */
 }
 
-input {
+input[type="radio"] {
   margin-left: 0;
   margin-right: 5px;
 }

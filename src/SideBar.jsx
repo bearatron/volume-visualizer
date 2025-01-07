@@ -3,12 +3,17 @@ import { useState } from "react";
 import { parseTex } from "tex-math-parser";
 import * as math from "mathjs";
 import { addStyles, StaticMathField, EditableMathField } from "react-mathquill";
-import InputGroup from "./InputGroup";
 import ErrorContainer from "./ErrorContainer";
 
 addStyles();
 
 export default function SideBar() {
+  const mathquillConfig = {
+    spaceBehavesLikeTab: true,
+    // autoCommands causes an error for some reason
+    // autoCommands: "pi, sqrt",
+  };
+
   const [func, setFunc] = useState(""); // latex string (with x as variable)
   const [funcError, setFuncError] = useState("");
 
@@ -29,17 +34,13 @@ export default function SideBar() {
   const [upperBound, setUpperBound] = useState(""); // latex string (no variables)
   const [upperBoundError, setUpperBoundError] = useState("");
 
-  const [varText, setVarText] = useState("");
-  const [varError, setVarError] = useState("");
-  const [ansText, setAnsText] = useState("");
-
   function handleSubmit() {
     setFuncError("");
     setCustomFuncError("");
     setLowerBoundError("");
     setUpperBoundError("");
 
-    console.log("submit button pressed!");
+    console.log("Inputs submitted");
 
     console.log(`func: ${func}`);
     console.log(`secondFuncChoice: ${secondFuncChoice}`);
@@ -48,19 +49,14 @@ export default function SideBar() {
     console.log(`lowerBound: ${lowerBound}`);
     console.log(`upperBound: ${upperBound}`);
 
-    // const funcNode = parseTex(func);
-    // const funcCode = funcNode.compile();
+    // the below functions will get called in order until a value of true is returned
+    // ex. errorInFunc === false, errorInCustomFunc === true, then errorInBounds will not run
+    const errorInInput =
+      errorInFunc() || errorInCustomFunc() || errorInBounds();
 
-    // const varNode = parseTex(varText);
-    // const varCode = varNode.compile();
-    // const varValue = varCode.evaluate();
-
-    // console.log(varValue);
-    // const mathJSAns = funcCode.evaluate({ x: varValue });
-
-    // setAnsText(mathJSAns.toString());
-
-    let errorInInput = errorInFunc() || errorInCustomFunc() || errorInBounds();
+    errorInFunc();
+    errorInCustomFunc();
+    errorInBounds();
 
     if (errorInInput) {
       console.warn("There is at least 1 error");
@@ -156,19 +152,16 @@ export default function SideBar() {
 
     const option = Number(e.target.name);
 
-    console.log("Rotate around...");
-
     switch (option) {
       case AXIS_OF_ROTATION:
-        console.log("axis of rotation");
         setSecondFuncChoice(AXIS_OF_ROTATION);
         break;
       case CUSTOM_FUNCTION:
-        console.log("custom function");
         setSecondFuncChoice(CUSTOM_FUNCTION);
         break;
       default:
-        console.log("none");
+        // should not be possible to reach here
+        break;
     }
   }
 
@@ -176,23 +169,11 @@ export default function SideBar() {
     <div className="sidebar">
       <h1>Volume Visualizer</h1>
 
-      {
-        //TODO: Refactor
-        /* <InputGroup
-        labelTexStr="f(x)\\space=\\space"
-        varInput={true}
-        inputTexStr={func}
-        setInputTexStr={setFunc}
-        errorText={funcError}
-      /> */
-      }
-
       <div>
         <div className="input-group">
-          <StaticMathField className="input-label">
-            {"f(x)\\space=\\space"}
-          </StaticMathField>
+          <StaticMathField>{"f(x)\\space=\\space"}</StaticMathField>
           <EditableMathField
+            config={mathquillConfig}
             latex={func}
             className="math-input"
             onChange={(mathField) => {
@@ -239,7 +220,9 @@ export default function SideBar() {
                 <StaticMathField>{"g(x)\\space=\\space"}</StaticMathField>
 
                 <EditableMathField
+                  config={mathquillConfig}
                   latex={customFunc}
+                  className="math-input"
                   onChange={(mathField) => {
                     setCustomFunc(mathField.latex());
                   }}
@@ -275,6 +258,7 @@ export default function SideBar() {
           <div className="input-group">
             <StaticMathField>{"x_0\\space=\\space"}</StaticMathField>
             <EditableMathField
+              config={mathquillConfig}
               latex={lowerBound}
               className="math-input"
               onChange={(mathField) => {
@@ -288,6 +272,7 @@ export default function SideBar() {
           <div className="input-group">
             <StaticMathField>{"x_1\\space=\\space"}</StaticMathField>
             <EditableMathField
+              config={mathquillConfig}
               latex={upperBound}
               className="math-input"
               onChange={(mathField) => {
@@ -299,9 +284,7 @@ export default function SideBar() {
         </div>
       </div>
 
-      <hr />
-
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleSubmit}>Visualize</button>
     </div>
   );
 }
