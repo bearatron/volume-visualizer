@@ -1,8 +1,8 @@
 import "./ErrorContainer.css";
 
-export default function ErrorContainer({ content }) {
-  if (content) {
-    return <div className="error-container">{content}</div>;
+export default function ErrorContainer({ message }) {
+  if (message) {
+    return <div className="error-container">{message}</div>;
   } else {
     return <></>;
   }
