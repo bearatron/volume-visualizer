@@ -32,6 +32,11 @@ export default function SideBar() {
   const [ansText, setAnsText] = useState("");
 
   function handleSubmit() {
+    setFuncError("");
+    setCustomFuncError("");
+    setLowerBoundError("");
+    setUpperBoundError("");
+
     console.log("submit button pressed!");
 
     console.log(`func: ${func}`);
@@ -53,7 +58,12 @@ export default function SideBar() {
 
     // setAnsText(mathJSAns.toString());
 
+    validateFunc();
+    validateSecondFuncChoice();
+    validateCustomFunc();
+    validateAxisOfRotation();
     validateLowerBound();
+    validateUpperBound();
   }
 
   function validateFunc() {}
@@ -61,17 +71,19 @@ export default function SideBar() {
   function validateCustomFunc() {}
   function validateAxisOfRotation() {}
   function validateLowerBound() {
-    const lowerBoundNode = parseTex(lowerBound);
     try {
-      lowerBoundNode.compile().evaluate();
+      if (lowerBound.length === 0) {
+        throw new Error("Field cannot be empty");
+      }
+
+      const lowerBoundNode = parseTex(lowerBound);
+      const lowerBoundVal = lowerBoundNode.compile().evaluate();
     } catch (error) {
-      console.error("error in lower bound");
+      console.error(error);
       console.log(error.message);
       setLowerBoundError(error.message);
       return;
     }
-
-    const lowerBoundVal = lowerBoundNode.compile().evaluate();
   }
   function validateUpperBound() {
     const lowerBoundNode = parseTex(lowerBound);
@@ -155,7 +167,7 @@ export default function SideBar() {
             }}
           />
         </div>
-        <ErrorContainer>{funcError}</ErrorContainer>
+        <ErrorContainer message={funcError} />
       </div>
 
       <div>
@@ -202,7 +214,7 @@ export default function SideBar() {
           ) : (
             <></>
           )}
-          <ErrorContainer>{customFuncError}</ErrorContainer>
+          <ErrorContainer message={customFuncError} />
         </div>
       </div>
 
@@ -235,7 +247,7 @@ export default function SideBar() {
               }}
             />
           </div>
-          <ErrorContainer>{lowerBoundError}</ErrorContainer>
+          <ErrorContainer message={lowerBoundError} />
         </div>
         <div>
           <div className="input-group">
@@ -248,7 +260,7 @@ export default function SideBar() {
               }}
             />
           </div>
-          <ErrorContainer>{upperBoundError}</ErrorContainer>
+          <ErrorContainer message={upperBoundError} />
         </div>
       </div>
 
@@ -262,7 +274,7 @@ export default function SideBar() {
             onChange={handleVarChange}
           />
         </div>
-        <ErrorContainer>{varError}</ErrorContainer>
+        <ErrorContainer message={varError} />
       </div>
       {/* <div className="input-group">
         <p>x:</p>
