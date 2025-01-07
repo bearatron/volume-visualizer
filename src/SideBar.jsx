@@ -75,6 +75,8 @@ export default function SideBar() {
       if (func.length === 0) {
         throw new Error("Field cannot be empty");
       }
+
+      console.log(parseTex(func).compile().evaluate({ x: 10 }));
     } catch (error) {
       console.error(error);
       setFuncError(error.message);
@@ -83,6 +85,7 @@ export default function SideBar() {
 
     return errorInInput;
   }
+
   function errorInCustomFunc() {
     let errorInInput = false;
 
@@ -146,23 +149,6 @@ export default function SideBar() {
     }
 
     return errorInInput;
-  }
-
-  function handleVarChange(mathField) {
-    setVarText(mathField.latex());
-
-    // const node = parseTex(varText);
-    // const code = node.compile();
-    // setVarValue(code.evaluate());
-    // setVarError("");
-
-    // const val = Number(e.target.value);
-    // if (isNaN(val)) {
-    //   setVarError("Please enter a number");
-    // } else {
-    //   setVarValue(val);
-    //   setVarError("");
-    // }
   }
 
   function handleRadioButton(e) {
@@ -314,29 +300,8 @@ export default function SideBar() {
       </div>
 
       <hr />
-      <div>
-        <div className="input-group">
-          <StaticMathField>{"x\\space=\\space"}</StaticMathField>
-          <EditableMathField
-            latex={varText}
-            className="math-input"
-            onChange={handleVarChange}
-          />
-        </div>
-        <ErrorContainer message={varError} />
-      </div>
-      {/* <div className="input-group">
-        <p>x:</p>
-        <input
-          type="text"
-          name="equationInput"
-          id="equation-input"
-          onChange={handleVarChange}
-        />
-      </div>
-      {<p>{varError}</p> ? varError : <></>} */}
+
       <button onClick={handleSubmit}>Submit</button>
-      {<p>Answer: {ansText}</p> ? ansText : <></>}
     </div>
   );
 }
