@@ -54,17 +54,23 @@ export default function SideBar() {
     console.log(`lowerBound: ${lowerBound}`);
     console.log(`upperBound: ${upperBound}`);
 
-    // the below functions will get called in order until a value of true is returned
-    // ex. errorInFunc === false, errorInCustomFunc === true, then errorInBounds will not run
-    const errorInInput =
-      errorInFunc() || errorInCustomFunc() || errorInBounds();
+    let inputErrors = [];
 
-    errorInFunc();
-    errorInCustomFunc();
-    errorInBounds();
+    inputErrors.push(errorInFunc(), errorInCustomFunc(), errorInBounds());
 
-    if (errorInInput) {
-      console.warn("There is at least 1 error");
+    console.log("input errors:", inputErrors);
+    if (!errorInBounds()) {
+      if (!errorInFunc()) {
+        inputErrors.push(!isIntegrable(func));
+      }
+      if (secondFuncChoice === CUSTOM_FUNCTION && !errorInCustomFunc()) {
+        inputErrors.push(!isIntegrable(customFunc));
+      }
+    }
+
+    // check if all elements are false
+    if (inputErrors.every((x) => !x)) {
+      console.warn("There are no errors!");
       // don't send to scene component
     }
   }
@@ -122,37 +128,6 @@ export default function SideBar() {
           );
         }
       });
-
-      console.log("indefinite integral of f(x):");
-
-      const funcIndefInt = nerdamer(
-        `defint((${nerdamer.convertFromLaTeX(
-          func
-        )}, ${nerdamer.convertFromLaTeX(
-          lowerBound
-        )}, ${nerdamer.convertFromLaTeX(upperBound)}, x))`
-      );
-
-      console.log(funcIndefInt.toString());
-
-      console.log("fully integrated function:");
-      console.log(
-        nerdamer(
-          `integrate((${nerdamer.convertFromLaTeX(func)}), x)`
-        ).toString()
-      );
-
-      const evaluated = funcIndefInt.evaluate();
-      console.log("evaluated value:");
-      console.log(evaluated.toString());
-      console.log(evaluated.text("decimals"));
-
-      // check if imaginary
-      console.log(
-        Number(
-          nerdamer(`imagpart(${evaluated.text("decimals")})`).text("decimals")
-        ) === 0
-      );
 
       // console.log(transformed.toTex());
       // console.log(math.rationalize(transformed).toTex());
@@ -250,6 +225,58 @@ export default function SideBar() {
     }
 
     return errorInInput;
+  }
+
+  function isIntegrable(funcToCheck) {
+    // funcToCheck should be a latex string
+
+    const funcDefInt = nerdamer(
+      `defint((${nerdamer.convertFromLaTeX(
+        funcToCheck
+      )}, ${nerdamer.convertFromLaTeX(lowerBound)}, ${nerdamer.convertFromLaTeX(
+        upperBound
+      )}, x))`
+    );
+
+    console.log(
+      `definite integral of ${nerdamer.convertFromLaTeX(
+        funcToCheck
+      )} from ${nerdamer.convertFromLaTeX(
+        lowerBound
+      )} to ${nerdamer.convertFromLaTeX(
+        upperBound
+      )} is ${funcDefInt.toString()}`
+    );
+
+    // evaluate returns an value in fraction form, this converts it to decimals
+    const funcDefIntDecimal = funcDefInt.evaluate().text("decimals");
+
+    console.log(`decimal form: ${funcDefIntDecimal}`);
+
+    const imaginaryPartOfEvaluated = Number(
+      nerdamer(`imagpart(${funcDefIntDecimal})`).text("decimals")
+    );
+
+    console.log(
+      `imaginary part: ${nerdamer(`imagpart(${funcDefIntDecimal})`)}`
+    );
+
+    // if the indefinite integral has an imaginary part, there is at least one restriction within the bounds
+    // therefore, if the indefinite integral's imaginary part is 0, the function the user inputted is integrable
+    const funcIsValid = imaginaryPartOfEvaluated === 0;
+
+    if (!funcIsValid) {
+      if (funcToCheck === func) {
+        console.log("f is invalid");
+        setFuncError("Function is not integrable within that range");
+      }
+      if (funcToCheck === customFunc) {
+        console.log("g is invalid");
+        setCustomFuncError("Function is not integrable within that range");
+      }
+    }
+
+    return funcIsValid;
   }
 
   function handleRadioButton(e) {
