@@ -4,12 +4,17 @@ import { parseTex } from "tex-math-parser";
 import * as math from "mathjs";
 import { addStyles, StaticMathField, EditableMathField } from "react-mathquill";
 import ErrorContainer from "./ErrorContainer";
+import nerdamer from "nerdamer/nerdamer.core.js";
+import "nerdamer/Algebra.js";
+import "nerdamer/Calculus.js";
+import "nerdamer/Solve.js";
 
 addStyles();
 
 export default function SideBar() {
   const mathquillConfig = {
     spaceBehavesLikeTab: true,
+    maxDepth: 5,
     // autoCommands causes an error for some reason
     // autoCommands: "pi, sqrt",
   };
@@ -72,7 +77,107 @@ export default function SideBar() {
         throw new Error("Field cannot be empty");
       }
 
-      console.log(parseTex(func).compile().evaluate({ x: 10 }));
+      // console.log("simplified:");
+      // console.log(
+      //   math.simplify(parseTex(func).compile().toString()).toString()
+      // );
+
+      console.log("Test:");
+
+      const parsedFunc = parseTex(func);
+
+      // replace all instances of \frac with /
+      const transformed = parsedFunc.transform(function (node, path, parent) {
+        if (node.isOperatorNode && node.op === "\\frac") {
+          console.log("node args");
+          console.log(node.args);
+          return new math.OperatorNode("/", "divide", node.args);
+        } else {
+          return node;
+        }
+      });
+
+      console.log("transformed");
+      console.log(transformed);
+
+      console.log("traversing");
+      parsedFunc.traverse(function (node, path, parent) {
+        switch (node.type) {
+          case "OperatorNode":
+            console.log(node.type, node.op, node.fn);
+            break;
+          case "ConstantNode":
+            console.log(node.type, node.value);
+            break;
+          case "SymbolNode":
+            console.log(node.type, node.name);
+            break;
+          default:
+            console.log(node.type);
+        }
+
+        if (node.type === "OperatorNode" && node.fn === "divide") {
+          console.log(
+            `numerator: ${node.args[0]} denominator: ${node.args[1]}`
+          );
+        }
+      });
+
+      console.log("indefinite integral of f(x):");
+
+      const funcIndefInt = nerdamer(
+        `defint((${nerdamer.convertFromLaTeX(
+          func
+        )}, ${nerdamer.convertFromLaTeX(
+          lowerBound
+        )}, ${nerdamer.convertFromLaTeX(upperBound)}, x))`
+      );
+
+      console.log(funcIndefInt.toString());
+
+      console.log("fully integrated function:");
+      console.log(
+        nerdamer(
+          `integrate((${nerdamer.convertFromLaTeX(func)}), x)`
+        ).toString()
+      );
+
+      const evaluated = funcIndefInt.evaluate();
+      console.log("evaluated value:");
+      console.log(evaluated.toString());
+      console.log(evaluated.text("decimals"));
+
+      // check if imaginary
+      console.log(
+        Number(
+          nerdamer(`imagpart(${evaluated.text("decimals")})`).text("decimals")
+        ) === 0
+      );
+
+      // console.log(transformed.toTex());
+      // console.log(math.rationalize(transformed).toTex());
+
+      // console.log("Correct output:");
+      // console.log(math.parse("1/x + x^2"));
+      // console.log(math.rationalize(math.parse("1/x + x^2")).toTex());
+
+      console.log("-----");
+
+      // console.log(parseTex(func).toString());
+      // const simplified = math.simplify(parseTex(func));
+      // console.log(simplified);
+      // const rationalized = math.rationalize(simplified);
+      // console.log(rationalized);
+
+      // const transformed = node.transform(function (node, path, parent) {
+      //   // if (node.isSymbolNode && node.name === "x") {
+      //   //   return new math.ConstantNode(3);
+      //   // }
+      //   return node;
+      // });
+      // console.log(transformed.toString());
+
+      // console.log(parseTex(func).compile().evaluate({ x: 10 }));
     } catch (error) {
       console.error(error);
       setFuncError(error.message);
