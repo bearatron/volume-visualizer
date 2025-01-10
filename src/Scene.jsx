@@ -1,7 +1,14 @@
 import "./Scene.css";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { useState, useEffect, useRef } from "react";
+import { Stats, OrbitControls } from "@react-three/drei";
+import { useState, useEffect, useRef, useMemo } from "react";
+import * as THREE from "three";
+import { extend, useThree } from "@react-three/fiber";
+import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
+import ParametricCurves from "./ParametricCurves";
+import { f, g, XAXIS } from "./utils";
+
+// extend({ ParametricGeometry }); // Extend to make ParametricGeometry available in JSX
 
 export default function Scene() {
   const sceneRef = useRef(null);
@@ -27,17 +34,28 @@ export default function Scene() {
 
   return (
     <div ref={sceneRef} className="scene-container">
-      <Canvas>
-        {/* <color attach="background" args={["black"]} /> */}
-
-        <ambientLight intensity={0.5} />
+      <Canvas camera={{ position: [0, 0, 5] }}>
+        {/* <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
+
+        <Polyhedron position={[-0.75, -0.75, 0]} polyhedron={polyhedron} />
 
         <mesh position={[0, 0, 0]}>
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color="orange" />
-        </mesh>
+        </mesh> */}
+
         <OrbitControls />
+        <axesHelper args={[10]} />
+        <Stats />
+
+        <ParametricCurves
+          f={f}
+          g={g}
+          cutoffMin={0.1}
+          cutoffMax={3}
+          globalRotationAxis={XAXIS}
+        />
       </Canvas>
     </div>
   );
