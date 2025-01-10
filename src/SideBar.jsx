@@ -45,7 +45,7 @@ export default function SideBar() {
     setLowerBoundError("");
     setUpperBoundError("");
 
-    console.log("Inputs submitted");
+    console.log("--- Inputs submitted ---");
 
     console.log(`func: ${func}`);
     console.log(`secondFuncChoice: ${secondFuncChoice}`);
@@ -53,12 +53,13 @@ export default function SideBar() {
     console.log(`axisOfRotation: ${axisOfRotation}`);
     console.log(`lowerBound: ${lowerBound}`);
     console.log(`upperBound: ${upperBound}`);
+    console.log("--- End of input log ---");
 
     let inputErrors = [];
 
     inputErrors.push(errorInFunc(), errorInCustomFunc(), errorInBounds());
 
-    console.log("input errors:", inputErrors);
+    // console.log("input errors:", inputErrors);
     if (!errorInBounds()) {
       if (!errorInFunc()) {
         inputErrors.push(!isIntegrable(func));
@@ -88,46 +89,48 @@ export default function SideBar() {
       //   math.simplify(parseTex(func).compile().toString()).toString()
       // );
 
-      console.log("Test:");
+      // console.log("Test:");
 
-      const parsedFunc = parseTex(func);
+      // const parsedFunc = parseTex(func);
 
-      // replace all instances of \frac with /
-      const transformed = parsedFunc.transform(function (node, path, parent) {
-        if (node.isOperatorNode && node.op === "\\frac") {
-          console.log("node args");
-          console.log(node.args);
-          return new math.OperatorNode("/", "divide", node.args);
-        } else {
-          return node;
-        }
-      });
+      // // replace all instances of \frac with /
+      // const transformed = parsedFunc.transform(function (node, path, parent) {
+      //   if (node.isOperatorNode && node.op === "\\frac") {
+      //     console.log("node args");
+      //     console.log(node.args);
+      //     return new math.OperatorNode("/", "divide", node.args);
+      //   } else {
+      //     return node;
+      //   }
+      // });
 
-      console.log("transformed");
-      console.log(transformed);
+      // console.log("transformed");
+      // console.log(transformed);
 
-      console.log("traversing");
-      parsedFunc.traverse(function (node, path, parent) {
-        switch (node.type) {
-          case "OperatorNode":
-            console.log(node.type, node.op, node.fn);
-            break;
-          case "ConstantNode":
-            console.log(node.type, node.value);
-            break;
-          case "SymbolNode":
-            console.log(node.type, node.name);
-            break;
-          default:
-            console.log(node.type);
-        }
+      // console.log("traversing");
+      // parsedFunc.traverse(function (node, path, parent) {
+      //   switch (node.type) {
+      //     case "OperatorNode":
+      //       console.log(node.type, node.op, node.fn);
+      //       break;
+      //     case "ConstantNode":
+      //       console.log(node.type, node.value);
+      //       break;
+      //     case "SymbolNode":
+      //       console.log(node.type, node.name);
+      //       break;
+      //     default:
+      //       console.log(node.type);
+      //   }
 
-        if (node.type === "OperatorNode" && node.fn === "divide") {
-          console.log(
-            `numerator: ${node.args[0]} denominator: ${node.args[1]}`
-          );
-        }
-      });
+      //   if (node.type === "OperatorNode" && node.fn === "divide") {
+      //     console.log(
+      //       `numerator: ${node.args[0]} denominator: ${node.args[1]}`
+      //     );
+      //   }
+      // });
+
+      // console.log("-----");
 
       // console.log(transformed.toTex());
       // console.log(math.rationalize(transformed).toTex());
@@ -135,8 +138,6 @@ export default function SideBar() {
       // console.log("Correct output:");
       // console.log(math.parse("1/x + x^2"));
       // console.log(math.rationalize(math.parse("1/x + x^2")).toTex());
-
-      console.log("-----");
 
       // console.log(parseTex(func).toString());
       // const simplified = math.simplify(parseTex(func));
@@ -194,7 +195,7 @@ export default function SideBar() {
         throw new Error("Please enter a real number");
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       setLowerBoundError(error.message);
       errorInInput = true;
       return errorInInput;
@@ -228,14 +229,17 @@ export default function SideBar() {
   }
 
   function isIntegrable(funcToCheck) {
+    const setErrorMsg =
+      funcToCheck === func ? setFuncError : setCustomFuncError;
+
     // funcToCheck should be a latex string
 
     const funcDefInt = nerdamer(
-      `defint((${nerdamer.convertFromLaTeX(
+      `defint(${nerdamer.convertFromLaTeX(
         funcToCheck
       )}, ${nerdamer.convertFromLaTeX(lowerBound)}, ${nerdamer.convertFromLaTeX(
         upperBound
-      )}, x))`
+      )}, x)`
     );
 
     console.log(
@@ -243,9 +247,7 @@ export default function SideBar() {
         funcToCheck
       )} from ${nerdamer.convertFromLaTeX(
         lowerBound
-      )} to ${nerdamer.convertFromLaTeX(
-        upperBound
-      )} is ${funcDefInt.toString()}`
+      )} to ${nerdamer.convertFromLaTeX(upperBound)} is ${funcDefInt}`
     );
 
     // evaluate returns an value in fraction form, this converts it to decimals
@@ -253,26 +255,53 @@ export default function SideBar() {
 
     console.log(`decimal form: ${funcDefIntDecimal}`);
 
-    const imaginaryPartOfEvaluated = Number(
+    const imaginaryPart = Number(
       nerdamer(`imagpart(${funcDefIntDecimal})`).text("decimals")
     );
 
-    console.log(
-      `imaginary part: ${nerdamer(`imagpart(${funcDefIntDecimal})`)}`
-    );
+    console.log(`imaginary part: ${imaginaryPart}`);
 
     // if the indefinite integral has an imaginary part, there is at least one restriction within the bounds
     // therefore, if the indefinite integral's imaginary part is 0, the function the user inputted is integrable
-    const funcIsValid = imaginaryPartOfEvaluated === 0;
+    let funcIsValid = imaginaryPart === 0;
+
+    try {
+      const funcAtLowerBound = nerdamer(
+        nerdamer.convertFromLaTeX(funcToCheck),
+        {
+          x: nerdamer.convertFromLaTeX(lowerBound),
+        }
+      );
+      const funcAtUpperBound = nerdamer(
+        nerdamer.convertFromLaTeX(funcToCheck),
+        {
+          x: nerdamer.convertFromLaTeX(upperBound),
+        }
+      );
+      console.log(
+        `${funcAtLowerBound.text()} = ${funcAtLowerBound
+          .evaluate()
+          .text("decimals")}`
+      );
+      console.log(
+        `${funcAtUpperBound.text()} = ${funcAtUpperBound
+          .evaluate()
+          .text("decimals")}`
+      );
+    } catch (error) {
+      console.error(error.message);
+      setErrorMsg(error.message);
+      funcIsValid = false;
+    }
 
     if (!funcIsValid) {
       if (funcToCheck === func) {
         console.log("f is invalid");
-        setFuncError("Function is not integrable within that range");
+        setErrorMsg("Function is not integrable within that range");
       }
       if (funcToCheck === customFunc) {
         console.log("g is invalid");
-        setCustomFuncError("Function is not integrable within that range");
+        setErrorMsg("Function is not integrable within that range");
       }
     }
 
