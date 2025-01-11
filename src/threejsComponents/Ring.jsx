@@ -16,25 +16,11 @@ export default function Ring({
   hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
   shape.holes.push(hole);
 
-  // Create geometry and material
-  //   const geometry = new THREE.ShapeGeometry(shape, 256);
-  //   const material = new THREE.MeshBasicMaterial({
-  //     color: color,
-  //     side: THREE.DoubleSide,
-  //     transparent: true,
-  //     opacity: opacity,
-  //   });
-
-  // Create the mesh
-  //   const ring = new THREE.Mesh(geometry, material);
-
-  //   ring.rotation.y = Math.PI / 2;
-  //   ring.position.x = location;
-
   return (
     <mesh rotation={[0, Math.PI / 2, 0]} position={[location, 0, 0]}>
       <shapeGeometry attach="geometry" args={[shape, 256]} />
       <meshBasicMaterial
+        attach="material"
         color={color}
         side={THREE.DoubleSide}
         transparent={true}
