@@ -17,7 +17,11 @@ export default function Ring({
   shape.holes.push(hole);
 
   return (
-    <mesh rotation={[0, Math.PI / 2, 0]} position={[location, 0, 0]}>
+    <mesh
+      rotation={[0, Math.PI / 2, 0]}
+      position={[location, 0, 0]}
+      wireframe={true}
+    >
       <shapeGeometry attach="geometry" args={[shape, 256]} />
       <meshBasicMaterial
         attach="material"

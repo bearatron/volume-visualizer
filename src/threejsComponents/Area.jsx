@@ -59,25 +59,16 @@ export default function Area({
     }
 
     // Draw the first curve
-    // const curveGeometry1 = new THREE.BufferGeometry().setFromPoints(
-    //   curvePoints1
-    // );
-    // const curveMaterial1 = new THREE.LineBasicMaterial({ color: color1 });
-
     const curveLine1 = (
-      <line>
+      <line key={1}>
         <bufferGeometry attach="geometry" setFromPoints={curvePoints1} />
         <lineBasicMaterial attach="material" color={color1} />
       </line>
     );
 
     // Draw the second curve
-    // const curveGeometry2 = new THREE.BufferGeometry().setFromPoints(
-    //   curvePoints2
-    // );
-    // const curveMaterial2 = new THREE.LineBasicMaterial({ color: color2 });
     const curveLine2 = (
-      <line>
+      <line key={2}>
         <bufferGeometry attach="geometry" setFromPoints={curvePoints2} />
         <lineBasicMaterial attach="material" color={color2} />
       </line>
@@ -85,16 +76,9 @@ export default function Area({
 
     // Create the shape and geometry for the filled area
     const shape = new THREE.Shape(fillPoints);
-    // const geometry = new THREE.ShapeGeometry(shape);
-    // const material = new THREE.MeshBasicMaterial({
-    //   color: fillColor,
-    //   side: THREE.DoubleSide,
-    //   opacity: 0.5,
-    //   transparent: true,
-    // });
 
     const filledArea = (
-      <mesh>
+      <mesh key={3}>
         <shapeGeometry attach="geometry" args={[shape]} />
         <meshBasicMaterial
           attach="material"
