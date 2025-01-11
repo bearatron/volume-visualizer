@@ -8,10 +8,17 @@ import nerdamer from "nerdamer/nerdamer.core.js";
 import "nerdamer/Algebra.js";
 import "nerdamer/Calculus.js";
 import "nerdamer/Solve.js";
+import { XAXIS, YAXIS } from "./threejsComponents/utils";
 
 addStyles();
 
-export default function SideBar() {
+export default function SideBar({
+  setF,
+  setG,
+  setMin,
+  setMax,
+  setGlobalRotationAxis,
+}) {
   const mathquillConfig = {
     spaceBehavesLikeTab: true,
     maxDepth: 5,
@@ -72,7 +79,15 @@ export default function SideBar() {
     // check if all elements are false
     if (inputErrors.every((x) => !x)) {
       console.warn("There are no errors!");
-      // don't send to scene component
+      setF((x) => parseTex(func).compile().evaluate({ x: x }));
+      setG(
+        secondFuncChoice === CUSTOM_FUNCTION
+          ? (x) => parseTex(customFunc).compile().evaluate({ x: x })
+          : (x) => 0
+      );
+      setMin(nerdamer.convertFromLaTeX(lowerBound).evaluate().text("decimals"));
+      setMax(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"));
+      setGlobalRotationAxis(axisOfRotation === "x axis" ? XAXIS : YAXIS);
     }
   }
 

@@ -1,19 +1,29 @@
 import "./Scene.css";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Stats, OrbitControls } from "@react-three/drei";
-import { useState, useEffect, useRef, useMemo } from "react";
-import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
-import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import ParametricCurves from "./ParametricCurves";
-import { f, g, XAXIS, YAXIS } from "./utils";
+import { XAXIS, YAXIS } from "./utils";
 import BoundingCylinders from "./BoundingCylinders";
 import BoundingRings from "./BoundingRings";
 import Area from "./Area";
 
 // extend({ ParametricGeometry }); // Extend to make ParametricGeometry available in JSX
 
-export default function Scene() {
+export default function Scene(
+  {
+    // f,
+    // g,
+    // cutoffMin,
+    // cutoffMax,
+    // globalRotationAxis,
+  }
+) {
+  const f = (x) => x ** 2;
+  const g = (x) => x ** 3;
+  const cutoffMin = 0.1;
+  const cutoffMax = 3;
+  const globalRotationAxis = XAXIS;
+
   return (
     <div className="scene-container">
       <Canvas camera={{ position: [0, 0, 5] }}>
@@ -24,33 +34,33 @@ export default function Scene() {
         <ParametricCurves
           f={f}
           g={g}
-          cutoffMin={0.1}
-          cutoffMax={1}
-          globalRotationAxis={XAXIS}
+          cutoffMin={cutoffMin}
+          cutoffMax={cutoffMax}
+          globalRotationAxis={globalRotationAxis}
         />
 
         <BoundingCylinders
           f={f}
           g={g}
-          cutoffMin={0.1}
-          cutoffMax={1}
-          globalRotationAxis={XAXIS}
+          cutoffMin={cutoffMin}
+          cutoffMax={cutoffMax}
+          globalRotationAxis={globalRotationAxis}
         />
 
         <BoundingRings
           f={f}
           g={g}
-          cutoffMin={0.1}
-          cutoffMax={1}
-          globalRotationAxis={XAXIS}
+          cutoffMin={cutoffMin}
+          cutoffMax={cutoffMax}
+          globalRotationAxis={globalRotationAxis}
         />
 
         <Area
           f={f}
           g={g}
-          cutoffMin={0.1}
-          cutoffMax={1}
-          globalRotationAxis={XAXIS}
+          cutoffMin={cutoffMin}
+          cutoffMax={cutoffMax}
+          globalRotationAxis={globalRotationAxis}
         />
       </Canvas>
     </div>
