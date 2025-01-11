@@ -1,4 +1,4 @@
-export function findIntersectionPoints(func1, func2, start, end, step) {
+function findIntersectionPoints(func1, func2, start, end, step) {
   if (
     (func1(0) === 0 && func1(1000) === 0) ||
     (func2(0) === 0 && func2(1000) === 0)
@@ -17,13 +17,15 @@ export function findIntersectionPoints(func1, func2, start, end, step) {
   return intersections;
 }
 
+export const intersection1 = findIntersectionPoints(f, g, 10, 10, 0.0001);
+
 export const XAXIS = 0;
 export const YAXIS = 1;
 
 export function f(x) {
-  return 0.5;
+  return Math.log(x);
 }
 
 export function g(x) {
-  return 1;
+  return x + 2;
 }
