@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { YAXIS, intersection1 } from "./utils";
 import OpenEndedCylinder from "./OpenEndedCylinder";
 
-export default function Cylinders({
+export default function BoundingCylinders({
   f,
   g,
   cutoffMin,
@@ -29,26 +29,28 @@ export default function Cylinders({
       bottomLocationFinal = new THREE.Vector3(0, f(cutoffMax), 0);
       topLocationFinal = new THREE.Vector3(0, g(cutoffMax), 0);
     }
-  }
 
-  return (
-    <>
-      <OpenEndedCylinder
-        radiusTop={cutoffMin}
-        radiusBottom={cutoffMin}
-        bottomLocation={bottomLocation}
-        topLocation={topLocation}
-        radialSegments={64}
-        color={0x42f5cb}
-      />
-      <OpenEndedCylinder
-        radiusTop={cutoffMax}
-        radiusBottom={cutoffMax}
-        bottomLocation={bottomLocationFinal}
-        topLocation={topLocationFinal}
-        radialSegments={64}
-        color={0x42f5cb}
-      />
-    </>
-  );
+    return (
+      <>
+        <OpenEndedCylinder
+          radiusTop={cutoffMin}
+          radiusBottom={cutoffMin}
+          bottomLocation={bottomLocation}
+          topLocation={topLocation}
+          radialSegments={64}
+          color={0x42f5cb}
+        />
+        <OpenEndedCylinder
+          radiusTop={cutoffMax}
+          radiusBottom={cutoffMax}
+          bottomLocation={bottomLocationFinal}
+          topLocation={topLocationFinal}
+          radialSegments={64}
+          color={0x42f5cb}
+        />
+      </>
+    );
+  } else {
+    return <></>;
+  }
 }
