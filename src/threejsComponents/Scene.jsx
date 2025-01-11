@@ -7,7 +7,8 @@ import { extend, useThree } from "@react-three/fiber";
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import ParametricCurves from "./ParametricCurves";
 import { f, g, XAXIS, YAXIS } from "./utils";
-import Cylinders from "./Cylinders";
+import BoundingCylinders from "./BoundingCylinders";
+import BoundingRings from "./BoundingRings";
 
 // extend({ ParametricGeometry }); // Extend to make ParametricGeometry available in JSX
 
@@ -55,15 +56,23 @@ export default function Scene() {
           g={g}
           cutoffMin={0.1}
           cutoffMax={1}
-          globalRotationAxis={YAXIS}
+          globalRotationAxis={XAXIS}
         />
 
-        <Cylinders
+        <BoundingCylinders
           f={f}
           g={g}
           cutoffMin={0.1}
           cutoffMax={1}
-          globalRotationAxis={YAXIS}
+          globalRotationAxis={XAXIS}
+        />
+
+        <BoundingRings
+          f={f}
+          g={g}
+          cutoffMin={0.1}
+          cutoffMax={1}
+          globalRotationAxis={XAXIS}
         />
       </Canvas>
     </div>

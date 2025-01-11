@@ -23,9 +23,9 @@ export const XAXIS = 0;
 export const YAXIS = 1;
 
 export function f(x) {
-  return Math.log(x);
+  return 0.5;
 }
 
 export function g(x) {
-  return x + 2;
+  return 1;
 }
