@@ -11,6 +11,7 @@ export default function ParametricCurves({
   cutoffMin,
   cutoffMax,
   globalRotationAxis,
+  resolution = 20,
 }) {
   let min = Math.min(...intersection1);
   let max = Math.max(...intersection1);
@@ -51,8 +52,8 @@ export default function ParametricCurves({
             attach="geometry"
             args={[
               generateParametricCurve(f, min, max, globalRotationAxis),
-              100,
-              100,
+              resolution,
+              resolution,
             ]}
           />
         </line>
@@ -67,8 +68,8 @@ export default function ParametricCurves({
             attach="geometry"
             args={[
               generateParametricCurve(g, min, max, globalRotationAxis),
-              100,
-              100,
+              resolution,
+              resolution,
             ]}
           />
         </line>

@@ -8,6 +8,7 @@ export default function BoundingCylinders({
   cutoffMin,
   cutoffMax,
   globalRotationAxis,
+  segments,
 }) {
   let bottomLocation;
   let topLocation;
@@ -41,7 +42,7 @@ export default function BoundingCylinders({
           radiusBottom={cutoffMin}
           bottomLocation={bottomLocation}
           topLocation={topLocation}
-          radialSegments={64}
+          radialSegments={segments}
           color={0x42f5cb}
         />
         <OpenEndedCylinder
@@ -49,7 +50,7 @@ export default function BoundingCylinders({
           radiusBottom={cutoffMax}
           bottomLocation={bottomLocationFinal}
           topLocation={topLocationFinal}
-          radialSegments={64}
+          radialSegments={segments}
           color={0x42f5cb}
         />
       </>

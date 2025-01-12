@@ -7,8 +7,7 @@ import BoundingCylinders from "./BoundingCylinders";
 import BoundingRings from "./BoundingRings";
 import Area from "./Area";
 import * as THREE from "three";
-
-// extend({ ParametricGeometry }); // Extend to make ParametricGeometry available in JSX
+import { useControls } from "leva";
 
 export default function Scene({
   f,
@@ -17,6 +16,11 @@ export default function Scene({
   cutoffMax,
   globalRotationAxis,
 }) {
+  const { autoRotate, resolution } = useControls({
+    autoRotate: true,
+    resolution: 20,
+  });
+
   return (
     <div className="scene-container">
       <Canvas
@@ -28,7 +32,7 @@ export default function Scene({
         }}
       >
         <OrbitControls
-          autoRotate={true}
+          autoRotate={autoRotate}
           autoRotateSpeed={4}
           target={
             globalRotationAxis === XAXIS
@@ -44,6 +48,7 @@ export default function Scene({
           cutoffMin={cutoffMin}
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
+          resolution={resolution}
         />
 
         <BoundingCylinders
@@ -52,6 +57,7 @@ export default function Scene({
           cutoffMin={cutoffMin}
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
+          segments={resolution}
         />
 
         <BoundingRings

@@ -13,6 +13,7 @@
     "@react-three/drei": "^9.120.6",
     "@react-three/fiber": "^8.17.12",
     "@types/three": "^0.172.0",
+    "leva": "^0.9.35",
     "mathjs": "^14.0.1",
     "motion": "^11.17.0",
     "nerdamer": "^1.1.13",
