@@ -96,7 +96,6 @@ export default function Area({
   const areaRef = useRef(null);
 
   useFrame(() => {
-    const globalRotationAxis = XAXIS;
     if (areaRef.current) {
       if (globalRotationAxis === XAXIS) areaRef.current.rotation.x += 0.02;
       if (globalRotationAxis === YAXIS) areaRef.current.rotation.y += 0.02;

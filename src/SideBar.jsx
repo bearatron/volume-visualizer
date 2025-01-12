@@ -79,14 +79,17 @@ export default function SideBar({
     // check if all elements are false
     if (inputErrors.every((x) => !x)) {
       console.warn("There are no errors!");
-      setF((x) => parseTex(func).compile().evaluate({ x: x }));
-      setG(
+      setF(() => (x) => parseTex(func).compile().evaluate({ x: x }));
+      setG(() =>
         secondFuncChoice === CUSTOM_FUNCTION
           ? (x) => parseTex(customFunc).compile().evaluate({ x: x })
           : (x) => 0
       );
-      setMin(nerdamer.convertFromLaTeX(lowerBound).evaluate().text("decimals"));
-      setMax(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"));
+
+      // Number(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"))
+
+      setMin(parseTex(lowerBound).compile().evaluate());
+      setMax(parseTex(upperBound).compile().evaluate());
       setGlobalRotationAxis(axisOfRotation === "x axis" ? XAXIS : YAXIS);
     }
   }
