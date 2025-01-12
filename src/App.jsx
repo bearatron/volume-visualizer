@@ -27,9 +27,11 @@ export default function App() {
       <AnimatePresence initial={false}>
         {sideBarVisible ? (
           <motion.div
-            initial={{ opacity: 1, x: -100 }}
+            key="sidebar"
+            initial={{ opacity: 0, x: -200 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 1, x: -100 }}
+            exit={{ opacity: 0, x: -200 }}
+            transition={{ ease: "easeInOut" }}
           >
             <SideBar
               setF={setF}
