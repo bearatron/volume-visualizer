@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Ring from "./Ring";
-import { XAXIS, intersection1 } from "./utils";
+import { XAXIS, YAXIS, intersection1 } from "./utils";
 
 export default function BoundingRings({
   f,
@@ -20,6 +20,7 @@ export default function BoundingRings({
           color={0x00ff00}
           opacity={0.7}
           location={cutoffMin}
+          globalRotationAxis={globalRotationAxis}
         />
       ); // Outer radius: 2, Inner radius: 1
       toReturn.push(ringMesh);
@@ -32,6 +33,7 @@ export default function BoundingRings({
           color={0x00ff00}
           opacity={0.7}
           location={cutoffMin}
+          globalRotationAxis={globalRotationAxis}
         />
       ); // Outer radius: 2, Inner radius: 1
       toReturn.push(ringMesh);
@@ -45,6 +47,7 @@ export default function BoundingRings({
           color={0x00ff00}
           opacity={0.7}
           location={cutoffMax}
+          globalRotationAxis={globalRotationAxis}
         />
       ); // Outer radius: 2, Inner radius: 1
       toReturn.push(ringMesh);
@@ -57,10 +60,42 @@ export default function BoundingRings({
           color={0x00ff00}
           opacity={0.7}
           location={cutoffMax}
+          globalRotationAxis={globalRotationAxis}
         />
       ); // Outer radius: 2, Inner radius: 1
       toReturn.push(ringMesh);
     }
+  }
+
+  if (
+    globalRotationAxis === YAXIS &&
+    intersection1.length < 2 &&
+    g(1000) === 0
+  ) {
+    const ringMesh = (
+      <Ring
+        key={3}
+        outerRadius={cutoffMax}
+        innerRadius={0}
+        color={0x00ff00}
+        opacity={0.7}
+        location={f(cutoffMax)}
+        globalRotationAxis={globalRotationAxis}
+      />
+    ); // Outer radius: 2, Inner radius: 1
+    toReturn.push(ringMesh);
+    const ringMesh2 = (
+      <Ring
+        key={4}
+        outerRadius={cutoffMin}
+        innerRadius={0}
+        color={0x00ff00}
+        opacity={0.7}
+        location={f(cutoffMin)}
+        globalRotationAxis={globalRotationAxis}
+      />
+    ); // Outer radius: 2, Inner radius: 1
+    toReturn.push(ringMesh2);
   }
 
   return toReturn;

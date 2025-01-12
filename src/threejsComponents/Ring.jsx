@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { XAXIS } from "./utils";
 
 export default function Ring({
   outerRadius,
@@ -6,6 +7,7 @@ export default function Ring({
   color = 0xff0000,
   opacity = 0.5,
   location,
+  globalRotationAxis,
 }) {
   // Create a shape for the outer circle
   const shape = new THREE.Shape();
@@ -17,7 +19,14 @@ export default function Ring({
   shape.holes.push(hole);
 
   return (
-    <mesh rotation={[0, Math.PI / 2, 0]} position={[location, 0, 0]}>
+    <mesh
+      rotation={
+        globalRotationAxis === XAXIS ? [0, Math.PI / 2, 0] : [Math.PI / 2, 0, 0]
+      }
+      position={
+        globalRotationAxis === XAXIS ? [location, 0, 0] : [0, location, 0]
+      }
+    >
       <shapeGeometry attach="geometry" args={[shape, 256]} />
       <meshBasicMaterial
         attach="material"

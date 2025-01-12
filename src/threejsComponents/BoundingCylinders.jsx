@@ -14,7 +14,11 @@ export default function BoundingCylinders({
   let bottomLocationFinal;
   let topLocationFinal;
 
-  if (intersection1.length < 2 && globalRotationAxis == YAXIS) {
+  if (
+    intersection1.length < 2 &&
+    globalRotationAxis == YAXIS &&
+    g(1000) !== 0
+  ) {
     if (f(cutoffMin) > g(cutoffMin)) {
       bottomLocation = new THREE.Vector3(0, g(cutoffMin), 0);
       topLocation = new THREE.Vector3(0, f(cutoffMin), 0);
