@@ -64,10 +64,18 @@ export default function SideBar({
 
     let inputErrors = [];
 
-    inputErrors.push(errorInFunc(), errorInCustomFunc(), errorInBounds());
+    inputErrors.push(
+      errorInFunc(),
+      errorInCustomFunc(),
+      errorInBounds(),
+      hasInvalidLatex(func)
+    );
 
-    // console.log("input errors:", inputErrors);
-    if (!errorInBounds()) {
+    if (secondFuncChoice === CUSTOM_FUNCTION) {
+      inputErrors.push(hasInvalidLatex(customFunc));
+    }
+
+    if (inputErrors.every((x) => !x)) {
       if (!errorInFunc()) {
         inputErrors.push(!isIntegrable(func));
       }
@@ -79,12 +87,46 @@ export default function SideBar({
     // check if all elements are false
     if (inputErrors.every((x) => !x)) {
       console.warn("There are no errors!");
-      setF(() => (x) => parseTex(func).compile().evaluate({ x: x }));
-      setG(() =>
-        secondFuncChoice === CUSTOM_FUNCTION
-          ? (x) => parseTex(customFunc).compile().evaluate({ x: x })
-          : (x) => 0
+
+      // if (func.contains(""))
+
+      setF(
+        () => (x) =>
+          Number(
+            nerdamer(nerdamer.convertFromLaTeX(func), { x: x })
+              .evaluate()
+              .toDecimal()
+          )
       );
+      setG(
+        () => (x) =>
+          secondFuncChoice === CUSTOM_FUNCTION
+            ? Number(
+                nerdamer(nerdamer.convertFromLaTeX(customFunc), { x: x })
+                  .evaluate()
+                  .toDecimal()
+              )
+            : 0
+      );
+
+      // setF(
+      //   () => (x) =>
+      //     math.number(
+      //       parseTex(func)
+      //         .compile()
+      //         .evaluate({ x: math.number(math.round(x, 10)) })
+      //     )
+      // );
+      // setG(
+      //   () => (x) =>
+      //     secondFuncChoice === CUSTOM_FUNCTION
+      //       ? math.number(
+      //           parseTex(customFunc)
+      //             .compile()
+      //             .evaluate({ x: math.number(math.round(x, 10)) })
+      //         )
+      //       : 0
+      // );
 
       // Number(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"))
 
@@ -246,6 +288,21 @@ export default function SideBar({
     return errorInInput;
   }
 
+  function hasInvalidLatex(funcToCheck) {
+    const setErrorMsg =
+      funcToCheck === func ? setFuncError : setCustomFuncError;
+
+    if (funcToCheck.includes("log_")) {
+      console.log("error");
+      setErrorMsg(
+        "Instead of using a single log, convert to a fraction of two logs"
+      );
+      return true;
+    }
+
+    return false;
+  }
+
   function isIntegrable(funcToCheck) {
     const setErrorMsg =
       funcToCheck === func ? setFuncError : setCustomFuncError;
@@ -283,6 +340,10 @@ export default function SideBar({
     // therefore, if the indefinite integral's imaginary part is 0, the function the user inputted is integrable
     let funcIsValid = imaginaryPart === 0;
 
+    if (!funcIsValid) {
+      setErrorMsg("Function is not integrable within that range");
+    }
+
     try {
       const funcAtLowerBound = nerdamer(
         nerdamer.convertFromLaTeX(funcToCheck),
@@ -306,23 +367,39 @@ export default function SideBar({
           .evaluate()
           .text("decimals")}`
       );
+
+      if (
+        isNaN(Number(funcAtLowerBound.evaluate().text("decimals"))) ||
+        isNaN(Number(funcAtUpperBound.evaluate().text("decimals")))
+      ) {
+        throw new Error("Function cannot be evaluated");
+      }
+
+      // Number(
+      //   nerdamer(nerdamer.convertFromLaTeX(func), {
+      //     x: nerdamer.convertFromLaTeX(lowerBound),
+      //   })
+      //     .evaluate()
+      //     .toDecimal()
+      // );
     } catch (error) {
       console.error(error.message);
-      setErrorMsg(error.message);
+      if (error.message === "Function cannot be evaluated") {
+        setErrorMsg(error.message);
+      } else {
+        setErrorMsg("Function is not integrable within that range");
+      }
       funcIsValid = false;
     }
 
     if (!funcIsValid) {
       if (funcToCheck === func) {
         console.log("f is invalid");
-        setErrorMsg("Function is not integrable within that range");
       }
       if (funcToCheck === customFunc) {
         console.log("g is invalid");
-        setErrorMsg("Function is not integrable within that range");
       }
     }
-
     return funcIsValid;
   }
 
