@@ -88,8 +88,6 @@ export default function SideBar({
     if (inputErrors.every((x) => !x)) {
       console.warn("There are no errors!");
 
-      // if (func.contains(""))
-
       setF(
         () => (x) =>
           Number(
@@ -342,6 +340,7 @@ export default function SideBar({
 
     if (!funcIsValid) {
       setErrorMsg("Function is not integrable within that range");
+      return funcIsValid;
     }
 
     try {

@@ -19,6 +19,7 @@
     "nerdamer": "^1.1.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-error-boundary": "^5.0.0",
     "react-icons": "^5.4.0",
     "react-mathquill": "^1.0.3",
     "tex-math-parser": "^2.0.4",
