@@ -22,7 +22,7 @@ export default function App() {
         className="sidebar-toggle"
         onClick={() => setSideBarVisible(!sideBarVisible)}
       >
-        <FiSidebar size={20} className="sidebar-icon" />
+        <FiSidebar size={24} className="sidebar-icon" />
       </motion.button>
       <AnimatePresence initial={false}>
         {sideBarVisible ? (
