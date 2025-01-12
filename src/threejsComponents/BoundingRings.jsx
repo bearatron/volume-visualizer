@@ -72,30 +72,45 @@ export default function BoundingRings({
     intersection1.length < 2 &&
     g(1000) === 0
   ) {
-    const ringMesh = (
-      <Ring
-        key={3}
-        outerRadius={cutoffMax}
-        innerRadius={0}
-        color={0x00ff00}
-        opacity={0.7}
-        location={f(cutoffMax)}
-        globalRotationAxis={globalRotationAxis}
-      />
-    ); // Outer radius: 2, Inner radius: 1
-    toReturn.push(ringMesh);
-    const ringMesh2 = (
-      <Ring
-        key={4}
-        outerRadius={cutoffMin}
-        innerRadius={0}
-        color={0x00ff00}
-        opacity={0.7}
-        location={f(cutoffMin)}
-        globalRotationAxis={globalRotationAxis}
-      />
-    ); // Outer radius: 2, Inner radius: 1
-    toReturn.push(ringMesh2);
+    if (f(cutoffMax) - f(cutoffMin) === 0) {
+      const ringMesh = (
+        <Ring
+          key={3}
+          outerRadius={cutoffMax}
+          innerRadius={0}
+          color={0x00ff00}
+          opacity={0.7}
+          location={f(cutoffMax)}
+          globalRotationAxis={globalRotationAxis}
+        />
+      ); // Outer radius: 2, Inner radius: 1
+      toReturn.push(ringMesh);
+    } else {
+      const ringMesh = (
+        <Ring
+          key={3}
+          outerRadius={cutoffMax}
+          innerRadius={0}
+          color={0x00ff00}
+          opacity={0.7}
+          location={f(cutoffMax)}
+          globalRotationAxis={globalRotationAxis}
+        />
+      ); // Outer radius: 2, Inner radius: 1
+      toReturn.push(ringMesh);
+      const ringMesh2 = (
+        <Ring
+          key={4}
+          outerRadius={cutoffMin}
+          innerRadius={0}
+          color={0x00ff00}
+          opacity={0.7}
+          location={f(cutoffMin)}
+          globalRotationAxis={globalRotationAxis}
+        />
+      ); // Outer radius: 2, Inner radius: 1
+      toReturn.push(ringMesh2);
+    }
   }
 
   return toReturn;
