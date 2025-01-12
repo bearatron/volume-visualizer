@@ -24,26 +24,28 @@ export default function App() {
       >
         <FiSidebar size={24} className="sidebar-icon" />
       </motion.button>
+      {/* // visibility: sideBarVisible ? "visible" : "hidden", */}
       <AnimatePresence initial={false}>
-        {sideBarVisible ? (
-          <motion.div
-            key="sidebar"
-            initial={{ opacity: 0, x: -200 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -200 }}
-            transition={{ ease: "easeInOut" }}
-          >
-            <SideBar
-              setF={setF}
-              setG={setG}
-              setMin={setMin}
-              setMax={setMax}
-              setGlobalRotationAxis={setGlobalRotationAxis}
-            />
-          </motion.div>
-        ) : (
+        {/* {sideBarVisible ? ( */}
+        <motion.div
+          key="sidebar"
+          // initial={{ opacity: 0, x: -200 }}
+          // animate={{ opacity: 1, x: 0 }}
+          // exit={{ opacity: 0, x: -200 }}
+          // transition={{ ease: "easeInOut" }}
+          style={{ visibility: sideBarVisible ? "visible" : "hidden" }}
+        >
+          <SideBar
+            setF={setF}
+            setG={setG}
+            setMin={setMin}
+            setMax={setMax}
+            setGlobalRotationAxis={setGlobalRotationAxis}
+          />
+        </motion.div>
+        {/* ) : (
           <></>
-        )}
+        )} */}
       </AnimatePresence>
       <Scene
         f={f}
