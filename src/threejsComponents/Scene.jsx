@@ -21,7 +21,6 @@ export default function Scene({
       <Canvas camera={{ position: [0, 0, 5] }}>
         <OrbitControls />
         <axesHelper args={[10]} />
-        <Stats />
 
         <ParametricCurves
           f={f}

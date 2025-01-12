@@ -10,9 +10,6 @@ export default function Area({
   cutoffMax,
   globalRotationAxis,
 }) {
-  console.log(cutoffMin);
-  console.log(f(2));
-
   function drawFunctionsAndAreaBetween(
     func1,
     func2,
