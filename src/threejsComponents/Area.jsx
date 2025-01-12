@@ -10,6 +10,9 @@ export default function Area({
   cutoffMax,
   globalRotationAxis,
 }) {
+  console.log(cutoffMin);
+  console.log(f(2));
+
   function drawFunctionsAndAreaBetween(
     func1,
     func2,
@@ -97,8 +100,14 @@ export default function Area({
 
   useFrame(() => {
     if (areaRef.current) {
-      if (globalRotationAxis === XAXIS) areaRef.current.rotation.x += 0.02;
-      if (globalRotationAxis === YAXIS) areaRef.current.rotation.y += 0.02;
+      if (globalRotationAxis === XAXIS) {
+        areaRef.current.rotation.x += 0.02;
+        areaRef.current.rotation.y = 0;
+      }
+      if (globalRotationAxis === YAXIS) {
+        areaRef.current.rotation.x = 0;
+        areaRef.current.rotation.y += 0.02;
+      }
     }
   });
 
