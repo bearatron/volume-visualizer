@@ -11,7 +11,7 @@ export default function BoundingRings({
 }) {
   let toReturn = [];
   if (globalRotationAxis === XAXIS && intersection1.length < 2) {
-    if (f(cutoffMin) > g(cutoffMin)) {
+    if (Math.abs(f(cutoffMin)) > Math.abs(g(cutoffMin))) {
       const ringMesh = (
         <Ring
           key={1}
@@ -36,7 +36,7 @@ export default function BoundingRings({
       ); // Outer radius: 2, Inner radius: 1
       toReturn.push(ringMesh);
     }
-    if (f(cutoffMax) > g(cutoffMax)) {
+    if (Math.abs(f(cutoffMax)) > Math.abs(g(cutoffMax))) {
       const ringMesh = (
         <Ring
           key={2}
