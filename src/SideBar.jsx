@@ -71,7 +71,6 @@ export default function SideBar({
     );
 
     for (const i of inputErrors) {
-      console.log(i);
       if (i) {
         return;
       }
@@ -99,9 +98,6 @@ export default function SideBar({
         return;
       }
     }
-
-    // check if all elements are false
-    console.warn("There are no errors!");
 
     setF(
       () => (x) =>
@@ -146,6 +142,8 @@ export default function SideBar({
     setMin(parseTex(lowerBound).compile().evaluate());
     setMax(parseTex(upperBound).compile().evaluate());
     setGlobalRotationAxis(axisOfRotation === "x axis" ? XAXIS : YAXIS);
+
+    console.warn("There are no errors!");
   }
 
   function isEmpty(inputToCheck, setInputError) {
@@ -159,15 +157,9 @@ export default function SideBar({
 
   function hasInvalidLatex(inputToCheck, setInputError, allowX = false) {
     // matches a character that is NOT one of the following:
-    // digits, whitespace, math related chars listed below:
-    // e + - * / ^ ( ) [ ] { } _ . : , \
-    let regex;
-
-    if (allowX) {
-      regex = /[^xe0-9\s+\-*\/^()=\[\]\{\}_.:,\\]/; // allow x
-    } else {
-      regex = /[^e0-9\s+\-*\/^()=\[\]\{\}_.:,\\]/;
-    }
+    // lowercase letters, digits, whitespace, math related chars listed below:
+    // + - * / ^ ( ) [ ] { } _ . : , \
+    const regex = /[^a-z0-9\s+\-*\/^()\[\]\{\}_.:,\\]/;
 
     if (regex.test(inputToCheck)) {
       setInputError(`Invalid character "${regex.exec(inputToCheck)}"`);
@@ -270,45 +262,64 @@ export default function SideBar({
   }
 
   function isIntegrable(funcToCheck) {
+    // funcToCheck should be a latex string
     const setErrorMsg =
       funcToCheck === func ? setFuncError : setCustomFuncError;
 
-    // funcToCheck should be a latex string
+    try {
+      const funcDefInt = nerdamer(
+        `defint(${nerdamer.convertFromLaTeX(
+          funcToCheck
+        )}, ${nerdamer.convertFromLaTeX(
+          lowerBound
+        )}, ${nerdamer.convertFromLaTeX(upperBound)}, x)`
+      );
 
-    const funcDefInt = nerdamer(
-      `defint(${nerdamer.convertFromLaTeX(
-        funcToCheck
-      )}, ${nerdamer.convertFromLaTeX(lowerBound)}, ${nerdamer.convertFromLaTeX(
-        upperBound
-      )}, x)`
-    );
+      console.log(
+        `definite integral of ${nerdamer.convertFromLaTeX(
+          funcToCheck
+        )} from ${nerdamer.convertFromLaTeX(
+          lowerBound
+        )} to ${nerdamer.convertFromLaTeX(upperBound)} is ${funcDefInt}`
+      );
 
-    console.log(
-      `definite integral of ${nerdamer.convertFromLaTeX(
-        funcToCheck
-      )} from ${nerdamer.convertFromLaTeX(
-        lowerBound
-      )} to ${nerdamer.convertFromLaTeX(upperBound)} is ${funcDefInt}`
-    );
+      // evaluate returns an value in fraction form, this converts it to decimals
+      const funcDefIntDecimal = funcDefInt.evaluate().text("decimals");
 
-    // evaluate returns an value in fraction form, this converts it to decimals
-    const funcDefIntDecimal = funcDefInt.evaluate().text("decimals");
+      console.log(`decimal form: ${funcDefIntDecimal}`);
 
-    console.log(`decimal form: ${funcDefIntDecimal}`);
+      // matches letters other than i
+      const regex = /[a-hj-z]/;
+      if (regex.test(funcDefIntDecimal)) {
+        console.error(
+          `Invalid variable "${regex.exec(
+            funcDefInt
+          )}", the only variable in the function should be x`
+        );
+        setErrorMsg(
+          `Invalid variable "${regex.exec(
+            funcDefInt
+          )}", the only variable in the function should be x`
+        );
+        return false;
+      }
 
-    const imaginaryPart = Number(
-      nerdamer(`imagpart(${funcDefIntDecimal})`).text("decimals")
-    );
+      const imaginaryPart = Number(
+        nerdamer(`imagpart(${funcDefIntDecimal})`).text("decimals")
+      );
 
-    console.log(`imaginary part: ${imaginaryPart}`);
+      console.log(`imaginary part: ${imaginaryPart}`);
 
-    // if the indefinite integral has an imaginary part, there is at least one restriction within the bounds
-    // therefore, if the indefinite integral's imaginary part is 0, the function the user inputted is integrable
-    let funcIsValid = imaginaryPart === 0;
-
-    if (!funcIsValid) {
-      setErrorMsg("Function is not integrable within that range");
-      return funcIsValid;
+      // if the indefinite integral has an imaginary part, there is at least one restriction within the bounds
+      // therefore, if the indefinite integral's imaginary part is 0, the function the user inputted is integrable
+      if (imaginaryPart !== 0) {
+        setErrorMsg("Function is not integrable within that range");
+        return false;
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMsg(error.message);
+      return false;
     }
 
     try {
@@ -341,14 +352,6 @@ export default function SideBar({
       ) {
         throw new Error("Function cannot be evaluated");
       }
-
-      // Number(
-      //   nerdamer(nerdamer.convertFromLaTeX(func), {
-      //     x: nerdamer.convertFromLaTeX(lowerBound),
-      //   })
-      //     .evaluate()
-      //     .toDecimal()
-      // );
     } catch (error) {
       console.error(error.message);
       if (error.message === "Function cannot be evaluated") {
@@ -356,18 +359,10 @@ export default function SideBar({
       } else {
         setErrorMsg("Function is not integrable within that range");
       }
-      funcIsValid = false;
+      return false;
     }
 
-    if (!funcIsValid) {
-      if (funcToCheck === func) {
-        console.log("f is invalid");
-      }
-      if (funcToCheck === customFunc) {
-        console.log("g is invalid");
-      }
-    }
-    return funcIsValid;
+    return true;
   }
 
   function handleRadioButton(e) {
