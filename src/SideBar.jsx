@@ -302,6 +302,13 @@ export default function SideBar({
       logWarning();
     }
 
+    if (funcToCheck.includes("\\cdot" || funcToCheck.includes("\\times"))) {
+      setErrorMsg(
+        'Use parentheses or omit multiplication symbol eg. "3(2)" or "9x"'
+      );
+      return true;
+    }
+
     return false;
   }
 
