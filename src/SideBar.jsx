@@ -66,187 +66,161 @@ export default function SideBar({
 
     inputErrors.push(
       errorInFunc(),
-      errorInCustomFunc(),
-      errorInBounds(),
-      hasInvalidLatex(func)
+      secondFuncChoice === CUSTOM_FUNCTION ? errorInCustomFunc() : false,
+      errorInBounds()
     );
 
-    if (secondFuncChoice === CUSTOM_FUNCTION) {
-      inputErrors.push(hasInvalidLatex(customFunc));
+    for (const i of inputErrors) {
+      console.log(i);
+      if (i) {
+        return;
+      }
     }
 
-    if (inputErrors.every((x) => !x)) {
-      if (!errorInFunc()) {
-        inputErrors.push(!isIntegrable(func));
+    inputErrors.push(hasInvalidFunction(func));
+
+    if (secondFuncChoice === CUSTOM_FUNCTION) {
+      inputErrors.push(hasInvalidFunction(customFunc));
+    }
+
+    for (const i of inputErrors) {
+      if (i) {
+        return;
       }
-      if (secondFuncChoice === CUSTOM_FUNCTION && !errorInCustomFunc()) {
-        inputErrors.push(!isIntegrable(customFunc));
+    }
+
+    inputErrors.push(!isIntegrable(func));
+    if (secondFuncChoice === CUSTOM_FUNCTION) {
+      inputErrors.push(!isIntegrable(customFunc));
+    }
+
+    for (const i of inputErrors) {
+      if (i) {
+        return;
       }
     }
 
     // check if all elements are false
-    if (inputErrors.every((x) => !x)) {
-      console.warn("There are no errors!");
+    console.warn("There are no errors!");
 
-      setF(
-        () => (x) =>
-          Number(
-            nerdamer(nerdamer.convertFromLaTeX(func), { x: x })
-              .evaluate()
-              .toDecimal()
-          )
-      );
-      setG(
-        () => (x) =>
-          secondFuncChoice === CUSTOM_FUNCTION
-            ? Number(
-                nerdamer(nerdamer.convertFromLaTeX(customFunc), { x: x })
-                  .evaluate()
-                  .toDecimal()
-              )
-            : 0
-      );
+    setF(
+      () => (x) =>
+        Number(
+          nerdamer(nerdamer.convertFromLaTeX(func), { x: x })
+            .evaluate()
+            .toDecimal()
+        )
+    );
+    setG(
+      () => (x) =>
+        secondFuncChoice === CUSTOM_FUNCTION
+          ? Number(
+              nerdamer(nerdamer.convertFromLaTeX(customFunc), { x: x })
+                .evaluate()
+                .toDecimal()
+            )
+          : 0
+    );
 
-      // setF(
-      //   () => (x) =>
-      //     math.number(
-      //       parseTex(func)
-      //         .compile()
-      //         .evaluate({ x: math.number(math.round(x, 10)) })
-      //     )
-      // );
-      // setG(
-      //   () => (x) =>
-      //     secondFuncChoice === CUSTOM_FUNCTION
-      //       ? math.number(
-      //           parseTex(customFunc)
-      //             .compile()
-      //             .evaluate({ x: math.number(math.round(x, 10)) })
-      //         )
-      //       : 0
-      // );
+    // setF(
+    //   () => (x) =>
+    //     math.number(
+    //       parseTex(func)
+    //         .compile()
+    //         .evaluate({ x: math.number(math.round(x, 10)) })
+    //     )
+    // );
+    // setG(
+    //   () => (x) =>
+    //     secondFuncChoice === CUSTOM_FUNCTION
+    //       ? math.number(
+    //           parseTex(customFunc)
+    //             .compile()
+    //             .evaluate({ x: math.number(math.round(x, 10)) })
+    //         )
+    //       : 0
+    // );
 
-      // Number(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"))
+    // Number(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"))
 
-      setMin(parseTex(lowerBound).compile().evaluate());
-      setMax(parseTex(upperBound).compile().evaluate());
-      setGlobalRotationAxis(axisOfRotation === "x axis" ? XAXIS : YAXIS);
+    setMin(parseTex(lowerBound).compile().evaluate());
+    setMax(parseTex(upperBound).compile().evaluate());
+    setGlobalRotationAxis(axisOfRotation === "x axis" ? XAXIS : YAXIS);
+  }
+
+  function isEmpty(inputToCheck, setInputError) {
+    if (inputToCheck.length === 0) {
+      console.error("Empty field");
+      setInputError("Field cannot be empty");
+      return true;
     }
+    return false;
+  }
+
+  function hasInvalidLatex(inputToCheck, setInputError, allowX = false) {
+    // matches a character that is NOT one of the following:
+    // digits, whitespace, math related chars listed below:
+    // e + - * / ^ ( ) [ ] { } _ . : , \
+    let regex;
+
+    if (allowX) {
+      regex = /[^xe0-9\s+\-*\/^()=\[\]\{\}_.:,\\]/; // allow x
+    } else {
+      regex = /[^e0-9\s+\-*\/^()=\[\]\{\}_.:,\\]/;
+    }
+
+    if (regex.test(inputToCheck)) {
+      setInputError(`Invalid character "${regex.exec(inputToCheck)}"`);
+      console.error("Invalid characters in input");
+      return true;
+    }
+
+    return false;
   }
 
   function errorInFunc() {
-    let errorInInput = false;
-
-    try {
-      if (func.length === 0) {
-        throw new Error("Field cannot be empty");
-      }
-
-      // console.log("simplified:");
-      // console.log(
-      //   math.simplify(parseTex(func).compile().toString()).toString()
-      // );
-
-      // console.log("Test:");
-
-      // const parsedFunc = parseTex(func);
-
-      // // replace all instances of \frac with /
-      // const transformed = parsedFunc.transform(function (node, path, parent) {
-      //   if (node.isOperatorNode && node.op === "\\frac") {
-      //     console.log("node args");
-      //     console.log(node.args);
-      //     return new math.OperatorNode("/", "divide", node.args);
-      //   } else {
-      //     return node;
-      //   }
-      // });
-
-      // console.log("transformed");
-      // console.log(transformed);
-
-      // console.log("traversing");
-      // parsedFunc.traverse(function (node, path, parent) {
-      //   switch (node.type) {
-      //     case "OperatorNode":
-      //       console.log(node.type, node.op, node.fn);
-      //       break;
-      //     case "ConstantNode":
-      //       console.log(node.type, node.value);
-      //       break;
-      //     case "SymbolNode":
-      //       console.log(node.type, node.name);
-      //       break;
-      //     default:
-      //       console.log(node.type);
-      //   }
-
-      //   if (node.type === "OperatorNode" && node.fn === "divide") {
-      //     console.log(
-      //       `numerator: ${node.args[0]} denominator: ${node.args[1]}`
-      //     );
-      //   }
-      // });
-
-      // console.log("-----");
-
-      // console.log(transformed.toTex());
-      // console.log(math.rationalize(transformed).toTex());
-
-      // console.log("Correct output:");
-      // console.log(math.parse("1/x + x^2"));
-      // console.log(math.rationalize(math.parse("1/x + x^2")).toTex());
-
-      // console.log(parseTex(func).toString());
-      // const simplified = math.simplify(parseTex(func));
-      // console.log(simplified);
-      // const rationalized = math.rationalize(simplified);
-      // console.log(rationalized);
-
-      // const transformed = node.transform(function (node, path, parent) {
-      //   // if (node.isSymbolNode && node.name === "x") {
-      //   //   return new math.ConstantNode(3);
-      //   // }
-      //   return node;
-      // });
-      // console.log(transformed.toString());
-
-      // console.log(parseTex(func).compile().evaluate({ x: 10 }));
-    } catch (error) {
-      console.error(error);
-      setFuncError(error.message);
-      errorInInput = true;
+    if (isEmpty(func, setFuncError)) {
+      return true;
     }
 
-    return errorInInput;
+    if (hasInvalidLatex(func, setFuncError, true)) {
+      return true;
+    }
+
+    return false;
   }
 
   function errorInCustomFunc() {
-    let errorInInput = false;
-
-    try {
-      if (customFunc.length === 0 && secondFuncChoice === CUSTOM_FUNCTION) {
-        throw new Error("Field cannot be empty");
-      }
-    } catch (error) {
-      console.error(error);
-      setCustomFuncError(error.message);
-      errorInInput = true;
+    if (isEmpty(customFunc, setCustomFuncError)) {
+      return true;
     }
 
-    return errorInInput;
+    if (hasInvalidLatex(customFunc, setCustomFuncError, true)) {
+      return true;
+    }
+
+    return false;
   }
 
   function errorInBounds() {
+    if (
+      isEmpty(lowerBound, setLowerBoundError) ||
+      isEmpty(upperBound, setUpperBoundError)
+    ) {
+      return true;
+    }
+
+    if (
+      hasInvalidLatex(lowerBound, setLowerBoundError) ||
+      hasInvalidLatex(upperBound, setUpperBoundError)
+    ) {
+      return true;
+    }
+
     let lowerBoundVal;
     let upperBoundVal;
-    let errorInInput = false;
 
     try {
-      if (lowerBound.length === 0) {
-        throw new Error("Field cannot be empty");
-      }
-
       lowerBoundVal = parseTex(lowerBound).compile().evaluate();
 
       if (typeof lowerBoundVal !== "number") {
@@ -255,15 +229,10 @@ export default function SideBar({
     } catch (error) {
       console.error(error.message);
       setLowerBoundError(error.message);
-      errorInInput = true;
-      return errorInInput;
+      return true;
     }
 
     try {
-      if (upperBound.length === 0) {
-        throw new Error("Field cannot be empty");
-      }
-
       upperBoundVal = parseTex(upperBound).compile().evaluate();
 
       if (typeof lowerBoundVal !== "number") {
@@ -280,18 +249,17 @@ export default function SideBar({
     } catch (error) {
       console.error(error);
       setUpperBoundError(error.message);
-      errorInInput = true;
+      return true;
     }
 
-    return errorInInput;
+    return false;
   }
 
-  function hasInvalidLatex(funcToCheck) {
+  function hasInvalidFunction(funcToCheck) {
     const setErrorMsg =
       funcToCheck === func ? setFuncError : setCustomFuncError;
 
     if (funcToCheck.includes("log_")) {
-      console.log("error");
       setErrorMsg(
         "Instead of using a single log, convert to a fraction of two logs"
       );
