@@ -1,6 +1,6 @@
 import "./Scene.css";
 import { Canvas } from "@react-three/fiber";
-import { Stats, OrbitControls, FlyControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import ParametricCurves from "./ParametricCurves";
 import { STEP, XAXIS, YAXIS } from "./utils";
 import BoundingCylinders from "./BoundingCylinders";
@@ -17,8 +17,8 @@ export default function Scene({
   globalRotationAxis,
   intersection1,
 }) {
-  const { autoRotate, resolution } = useControls({
-    autoRotate: true,
+  const { rotateCamera, resolution } = useControls({
+    rotateCamera: true,
     resolution: 20,
   });
 
@@ -33,7 +33,7 @@ export default function Scene({
         }}
       >
         <OrbitControls
-          autoRotate={autoRotate}
+          autoRotate={rotateCamera}
           autoRotateSpeed={4}
           target={
             globalRotationAxis === XAXIS
