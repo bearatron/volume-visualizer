@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { YAXIS, intersection1, isZeroFunction } from "./utils";
+import { YAXIS, isZeroFunction } from "./utils";
 import OpenEndedCylinder from "./OpenEndedCylinder";
 
 export default function BoundingCylinders({
@@ -9,6 +9,7 @@ export default function BoundingCylinders({
   cutoffMax,
   globalRotationAxis,
   segments,
+  intersection1,
 }) {
   let bottomLocation;
   let topLocation;

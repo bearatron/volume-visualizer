@@ -8,7 +8,12 @@ import nerdamer from "nerdamer/nerdamer.core.js";
 import "nerdamer/Algebra.js";
 import "nerdamer/Calculus.js";
 import "nerdamer/Solve.js";
-import { STEP, XAXIS, YAXIS } from "./threejsComponents/utils";
+import {
+  findIntersectionPoints,
+  STEP,
+  XAXIS,
+  YAXIS,
+} from "./threejsComponents/utils";
 
 addStyles();
 
@@ -18,6 +23,7 @@ export default function SideBar({
   setMin,
   setMax,
   setGlobalRotationAxis,
+  setIntersection1,
 }) {
   const mathquillConfig = {
     spaceBehavesLikeTab: true,
@@ -99,24 +105,27 @@ export default function SideBar({
       }
     }
 
-    setF(
-      () => (x) =>
-        Number(
-          nerdamer(nerdamer.convertFromLaTeX(func), { x: x })
-            .evaluate()
-            .toDecimal()
-        )
-    );
-    setG(
-      () => (x) =>
-        secondFuncChoice === CUSTOM_FUNCTION
-          ? Number(
-              nerdamer(nerdamer.convertFromLaTeX(customFunc), { x: x })
-                .evaluate()
-                .toDecimal()
-            )
-          : 0
-    );
+    const f = (x) =>
+      Number(
+        nerdamer(nerdamer.convertFromLaTeX(func), { x: x })
+          .evaluate()
+          .toDecimal()
+      );
+
+    const g = (x) =>
+      secondFuncChoice === CUSTOM_FUNCTION
+        ? Number(
+            nerdamer(nerdamer.convertFromLaTeX(customFunc), { x: x })
+              .evaluate()
+              .toDecimal()
+          )
+        : 0;
+
+    const min = parseTex(lowerBound).compile().evaluate();
+    const max = parseTex(upperBound).compile().evaluate();
+
+    setF(() => f);
+    setG(() => g);
 
     // setF(
     //   () => (x) =>
@@ -139,9 +148,12 @@ export default function SideBar({
 
     // Number(nerdamer.convertFromLaTeX(upperBound).evaluate().text("decimals"))
 
-    setMin(parseTex(lowerBound).compile().evaluate());
-    setMax(parseTex(upperBound).compile().evaluate());
+    setMin(min);
+    setMax(max);
     setGlobalRotationAxis(axisOfRotation === "x axis" ? XAXIS : YAXIS);
+    setIntersection1(findIntersectionPoints(f, g, min, max, STEP));
+
+    console.log(findIntersectionPoints(f, g, min, max, STEP));
 
     console.warn("There are no errors!");
   }

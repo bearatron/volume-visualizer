@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Ring from "./Ring";
-import { XAXIS, YAXIS, intersection1, isZeroFunction } from "./utils";
+import { XAXIS, YAXIS, isZeroFunction } from "./utils";
 
 export default function BoundingRings({
   f,
@@ -8,6 +8,7 @@ export default function BoundingRings({
   cutoffMin,
   cutoffMax,
   globalRotationAxis,
+  intersection1,
 }) {
   let toReturn = [];
   if (globalRotationAxis === XAXIS && intersection1.length < 2) {

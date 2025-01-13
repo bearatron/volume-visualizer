@@ -1,7 +1,7 @@
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import * as THREE from "three";
 import { extend } from "@react-three/fiber";
-import { intersection1, XAXIS, YAXIS, isZeroFunction } from "./utils";
+import { XAXIS, YAXIS, isZeroFunction } from "./utils";
 
 extend({ ParametricGeometry }); // Extend to make ParametricGeometry available in JSX
 
@@ -12,6 +12,7 @@ export default function ParametricCurves({
   cutoffMax,
   globalRotationAxis,
   resolution = 20,
+  intersection1,
 }) {
   let min = Math.min(...intersection1);
   let max = Math.max(...intersection1);

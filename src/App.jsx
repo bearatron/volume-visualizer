@@ -2,7 +2,7 @@ import "./App.css";
 import Scene from "./threejsComponents/Scene";
 import SideBar from "./SideBar";
 import { useState } from "react";
-import { YAXIS } from "./threejsComponents/utils";
+import { STEP, YAXIS, findIntersectionPoints } from "./threejsComponents/utils";
 import { FiSidebar } from "react-icons/fi";
 import { motion, AnimatePresence } from "motion/react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -15,6 +15,9 @@ export default function App() {
   const [max, setMax] = useState(1);
   const [globalRotationAxis, setGlobalRotationAxis] = useState(YAXIS);
 
+  const [intersection1, setIntersection1] = useState(
+    findIntersectionPoints(f, g, min, max, STEP)
+  );
   const [sideBarVisible, setSideBarVisible] = useState(true);
 
   return (
@@ -44,6 +47,7 @@ export default function App() {
               setMin={setMin}
               setMax={setMax}
               setGlobalRotationAxis={setGlobalRotationAxis}
+              setIntersection1={setIntersection1}
             />
           </motion.div>
           {/* ) : (
@@ -56,6 +60,7 @@ export default function App() {
           cutoffMin={min}
           cutoffMax={max}
           globalRotationAxis={globalRotationAxis}
+          intersection1={intersection1}
         />
       </div>
     </ErrorBoundary>

@@ -1,8 +1,14 @@
-function findIntersectionPoints(func1, func2, start, end, step) {
-  if (
-    (func1(0) === 0 && func1(1000) === 0) ||
-    (func2(0) === 0 && func2(1000) === 0)
-  ) {
+export function isZeroFunction(func, min, max) {
+  for (let i = min; i <= max; i += STEP) {
+    if (func(i) !== 0) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function findIntersectionPoints(func1, func2, start, end, step) {
+  if (isZeroFunction(func1, start, end) || isZeroFunction(func2, start, end)) {
     return [0]; // Special case when f(x) = 0 or g(x) = 0
   }
 
@@ -17,26 +23,7 @@ function findIntersectionPoints(func1, func2, start, end, step) {
   return intersections;
 }
 
-export const intersection1 = findIntersectionPoints(f, g, 10, 10, 0.0001);
-
 export const XAXIS = 0;
 export const YAXIS = 1;
 
 export const STEP = 0.0001;
-
-export function f(x) {
-  return 0.5;
-}
-
-export function g(x) {
-  return 1;
-}
-
-export function isZeroFunction(func, min, max) {
-  for (let i = min; i <= max; i += STEP) {
-    if (func(i) !== 0) {
-      return false;
-    }
-  }
-  return true;
-}

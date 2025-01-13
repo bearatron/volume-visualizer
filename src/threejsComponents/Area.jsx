@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { intersection1, isZeroFunction, STEP, XAXIS, YAXIS } from "./utils";
+import { isZeroFunction, STEP, XAXIS, YAXIS } from "./utils";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
@@ -10,6 +10,7 @@ export default function Area({
   cutoffMax,
   globalRotationAxis,
   step = STEP, // granularity of plot
+  intersection1,
 }) {
   function drawFunctionsAndAreaBetween(
     func1,

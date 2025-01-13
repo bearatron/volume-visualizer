@@ -15,6 +15,7 @@ export default function Scene({
   cutoffMin,
   cutoffMax,
   globalRotationAxis,
+  intersection1,
 }) {
   const { autoRotate, resolution } = useControls({
     autoRotate: true,
@@ -49,6 +50,7 @@ export default function Scene({
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
           resolution={resolution}
+          intersection1={intersection1}
         />
 
         <BoundingCylinders
@@ -58,6 +60,7 @@ export default function Scene({
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
           segments={resolution}
+          intersection1={intersection1}
         />
 
         <BoundingRings
@@ -66,6 +69,7 @@ export default function Scene({
           cutoffMin={cutoffMin}
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
+          intersection1={intersection1}
         />
 
         <Area
@@ -75,6 +79,7 @@ export default function Scene({
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
           step={STEP}
+          intersection1={intersection1}
         />
       </Canvas>
     </div>
