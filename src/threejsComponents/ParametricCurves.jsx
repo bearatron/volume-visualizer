@@ -20,9 +20,14 @@ export default function ParametricCurves({
   function generateParametricCurve(func, min, max, axisOfRotation) {
     let effectiveMaxX;
     let effectiveMinX;
-    if (intersection1.length > 1) {
-      const minIntersection = Math.min(...intersection1);
-      const maxIntersection = Math.max(...intersection1);
+    const minIntersection = Math.min(...intersection1);
+    const maxIntersection = Math.max(...intersection1);
+
+    if (
+      intersection1.length > 1 &&
+      minIntersection > cutoffMin &&
+      maxIntersection < cutoffMax
+    ) {
       effectiveMinX = Math.max(minIntersection, cutoffMin);
       effectiveMaxX = Math.min(maxIntersection, cutoffMax);
     } else {
