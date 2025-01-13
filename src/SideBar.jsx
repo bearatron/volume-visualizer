@@ -25,6 +25,7 @@ export default function SideBar({
   setGlobalRotationAxis,
   setIntersection1,
   logWarning,
+  errorToast,
 }) {
   const mathquillConfig = {
     spaceBehavesLikeTab: true,
@@ -79,6 +80,7 @@ export default function SideBar({
 
     for (const i of inputErrors) {
       if (i) {
+        errorToast();
         return;
       }
     }
@@ -91,6 +93,7 @@ export default function SideBar({
 
     for (const i of inputErrors) {
       if (i) {
+        errorToast();
         return;
       }
     }
@@ -102,6 +105,7 @@ export default function SideBar({
 
     for (const i of inputErrors) {
       if (i) {
+        errorToast();
         return;
       }
     }

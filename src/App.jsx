@@ -21,7 +21,11 @@ export default function App() {
   const logWarning = () =>
     toast.info("log is calculated as the natural logarithm", {
       position: "bottom-right",
-      closeButton: true,
+    });
+
+  const errorToast = () =>
+    toast.error("There are one or more errors", {
+      position: "bottom-right",
     });
 
   return (
@@ -35,6 +39,7 @@ export default function App() {
           setGlobalRotationAxis={setGlobalRotationAxis}
           setIntersection1={setIntersection1}
           logWarning={logWarning}
+          errorToast={errorToast}
         />
         <Scene
           f={f}
