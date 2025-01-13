@@ -26,4 +26,4 @@ export function findIntersectionPoints(func1, func2, start, end, step) {
 export const XAXIS = 0;
 export const YAXIS = 1;
 
-export const STEP = 0.0001;
+export const STEP = 0.01;
