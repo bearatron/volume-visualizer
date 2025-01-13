@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { YAXIS, intersection1 } from "./utils";
+import { YAXIS, intersection1, isZeroFunction } from "./utils";
 import OpenEndedCylinder from "./OpenEndedCylinder";
 
 export default function BoundingCylinders({
@@ -18,7 +18,7 @@ export default function BoundingCylinders({
   if (
     intersection1.length < 2 &&
     globalRotationAxis == YAXIS &&
-    g(1000) !== 0
+    !isZeroFunction(g, cutoffMin, cutoffMax)
   ) {
     if (f(cutoffMin) > g(cutoffMin)) {
       bottomLocation = new THREE.Vector3(0, g(cutoffMin), 0);

@@ -2,7 +2,7 @@ import "./Scene.css";
 import { Canvas } from "@react-three/fiber";
 import { Stats, OrbitControls, FlyControls } from "@react-three/drei";
 import ParametricCurves from "./ParametricCurves";
-import { XAXIS, YAXIS } from "./utils";
+import { STEP, XAXIS, YAXIS } from "./utils";
 import BoundingCylinders from "./BoundingCylinders";
 import BoundingRings from "./BoundingRings";
 import Area from "./Area";
@@ -74,6 +74,7 @@ export default function Scene({
           cutoffMin={cutoffMin}
           cutoffMax={cutoffMax}
           globalRotationAxis={globalRotationAxis}
+          step={STEP}
         />
       </Canvas>
     </div>

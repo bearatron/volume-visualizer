@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { intersection1, XAXIS, YAXIS } from "./utils";
+import { intersection1, isZeroFunction, STEP, XAXIS, YAXIS } from "./utils";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 
@@ -9,6 +9,7 @@ export default function Area({
   cutoffMin,
   cutoffMax,
   globalRotationAxis,
+  step = STEP, // granularity of plot
 }) {
   function drawFunctionsAndAreaBetween(
     func1,
@@ -17,7 +18,6 @@ export default function Area({
     color2,
     fillColor
   ) {
-    const step = 0.001; // Granularity of the plot
     const curvePoints1 = [];
     const curvePoints2 = [];
     const fillPoints = [];
@@ -45,9 +45,13 @@ export default function Area({
       curvePoints2.push(new THREE.Vector3(x, y2, 0)); // Points for the second curve
 
       // Add the points for the fill area
-      if (globalRotationAxis == YAXIS && (g(1000) == 0 || f(1000) == 0)) {
+      if (
+        globalRotationAxis == YAXIS &&
+        (isZeroFunction(g, cutoffMin, cutoffMax) ||
+          isZeroFunction(f, cutoffMin, cutoffMax))
+      ) {
         // If one function is zero, draw the area from the non-zero function to the y-axis
-        const nonZeroFunc = g(1000) == 0 ? f : g; // Determine the non-zero function
+        const nonZeroFunc = isZeroFunction(g, cutoffMin, cutoffMax) ? f : g; // Determine the non-zero function
         const yValue = nonZeroFunc(x); // Get the value of the non-zero function at x
 
         fillPoints.push(new THREE.Vector2(0, yValue)); // Top boundary: Point on the non-zero function

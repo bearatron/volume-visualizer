@@ -8,7 +8,7 @@ import nerdamer from "nerdamer/nerdamer.core.js";
 import "nerdamer/Algebra.js";
 import "nerdamer/Calculus.js";
 import "nerdamer/Solve.js";
-import { XAXIS, YAXIS } from "./threejsComponents/utils";
+import { STEP, XAXIS, YAXIS } from "./threejsComponents/utils";
 
 addStyles();
 
@@ -237,6 +237,12 @@ export default function SideBar({
 
       if (upperBoundVal === lowerBoundVal) {
         throw new Error("Upper and lower bounds cannot be equal");
+      }
+
+      if (upperBoundVal - lowerBoundVal <= STEP) {
+        throw new Error(
+          `Difference between lower and upper bound must be larger than ${STEP}`
+        );
       }
     } catch (error) {
       console.error(error);

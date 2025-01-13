@@ -22,10 +22,21 @@ export const intersection1 = findIntersectionPoints(f, g, 10, 10, 0.0001);
 export const XAXIS = 0;
 export const YAXIS = 1;
 
+export const STEP = 0.0001;
+
 export function f(x) {
   return 0.5;
 }
 
 export function g(x) {
   return 1;
+}
+
+export function isZeroFunction(func, min, max) {
+  for (let i = min; i <= max; i += STEP) {
+    if (func(i) !== 0) {
+      return false;
+    }
+  }
+  return true;
 }
