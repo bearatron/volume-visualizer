@@ -5,6 +5,7 @@ import { useState } from "react";
 import { STEP, YAXIS, findIntersectionPoints } from "./threejsComponents/utils";
 import { ErrorBoundary } from "react-error-boundary";
 import Fallback from "./Fallback";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function App() {
   const [f, setF] = useState(() => (x) => x ** 2);
@@ -17,6 +18,12 @@ export default function App() {
     findIntersectionPoints(f, g, min, max, STEP)
   );
 
+  const logWarning = () =>
+    toast.info("log is calculated as the natural logarithm", {
+      position: "bottom-right",
+      closeButton: true,
+    });
+
   return (
     <ErrorBoundary FallbackComponent={Fallback}>
       <div className="App">
@@ -27,6 +34,7 @@ export default function App() {
           setMax={setMax}
           setGlobalRotationAxis={setGlobalRotationAxis}
           setIntersection1={setIntersection1}
+          logWarning={logWarning}
         />
         <Scene
           f={f}
@@ -36,6 +44,8 @@ export default function App() {
           globalRotationAxis={globalRotationAxis}
           intersection1={intersection1}
         />
+
+        <ToastContainer />
       </div>
     </ErrorBoundary>
   );

@@ -24,6 +24,7 @@ export default function SideBar({
   setMax,
   setGlobalRotationAxis,
   setIntersection1,
+  logWarning,
 }) {
   const mathquillConfig = {
     spaceBehavesLikeTab: true,
@@ -112,6 +113,13 @@ export default function SideBar({
           .toDecimal()
       );
 
+    // const f = (x) =>
+    //   math.number(
+    //     parseTex(func)
+    //       .compile()
+    //       .evaluate({ x: math.number(math.round(x, 10)) })
+    //   );
+
     const g = (x) =>
       secondFuncChoice === CUSTOM_FUNCTION
         ? Number(
@@ -120,6 +128,15 @@ export default function SideBar({
               .toDecimal()
           )
         : 0;
+
+    // const g = (x) =>
+    //   secondFuncChoice === CUSTOM_FUNCTION
+    //     ? math.number(
+    //         parseTex(customFunc)
+    //           .compile()
+    //           .evaluate({ x: math.number(math.round(x, 10)) })
+    //       )
+    //     : 0;
 
     const min = parseTex(lowerBound).compile().evaluate();
     const max = parseTex(upperBound).compile().evaluate();
@@ -274,6 +291,15 @@ export default function SideBar({
         "Instead of using a single log, convert to a fraction of two logs"
       );
       return true;
+    }
+
+    if (funcToCheck.includes("ln")) {
+      setErrorMsg('Use "log" for natural logarithm');
+      return true;
+    }
+
+    if (funcToCheck.includes("log")) {
+      logWarning();
     }
 
     return false;

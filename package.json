@@ -21,6 +21,7 @@
     "react-error-boundary": "^5.0.0",
     "react-icons": "^5.4.0",
     "react-mathquill": "^1.0.3",
+    "react-toastify": "^11.0.2",
     "tex-math-parser": "^2.0.4",
     "three": "^0.172.0"
   },
