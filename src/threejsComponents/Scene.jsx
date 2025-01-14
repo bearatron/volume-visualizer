@@ -22,23 +22,42 @@ export default function Scene({
     resolution: 20,
   });
 
+  let centerOfRotation;
+
+  if (globalRotationAxis === XAXIS) {
+    centerOfRotation = [(cutoffMin + cutoffMax) / 2, 0, 0];
+  } else {
+    centerOfRotation = [
+      0,
+      (Math.min(f(cutoffMin), g(cutoffMin)) +
+        Math.max(f(cutoffMax), g(cutoffMax))) /
+        2,
+      0,
+    ];
+  }
+
+  console.log(`min: ${Math.min(f(cutoffMin), g(cutoffMin))}`);
+  console.log(`max: ${Math.max(f(cutoffMax), g(cutoffMax))}`);
+  console.log(`center of rotation: (${centerOfRotation})`);
+
   return (
     <div className="scene-container">
-      <Canvas
-        camera={{
-          position:
-            globalRotationAxis === XAXIS
-              ? [(cutoffMin + cutoffMax) / 2, 0, 5]
-              : [0, (f(cutoffMin) + f(cutoffMax)) / 2, 5],
-        }}
-      >
+      <Canvas>
         <OrbitControls
           autoRotate={rotateCamera}
           autoRotateSpeed={4}
           target={
             globalRotationAxis === XAXIS
-              ? new THREE.Vector3((cutoffMin + cutoffMax) / 2, 0, 0)
-              : new THREE.Vector3(0, (f(cutoffMin) + f(cutoffMax)) / 2, 0)
+              ? new THREE.Vector3(
+                  centerOfRotation[0],
+                  centerOfRotation[1],
+                  centerOfRotation[2]
+                )
+              : new THREE.Vector3(
+                  centerOfRotation[0],
+                  centerOfRotation[1],
+                  centerOfRotation[2]
+                )
           }
         />
         <axesHelper args={[10]} />

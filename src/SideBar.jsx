@@ -175,7 +175,6 @@ export default function SideBar({
     setIntersection1(findIntersectionPoints(f, g, min, max, STEP));
 
     console.log(findIntersectionPoints(f, g, min, max, STEP));
-
     console.warn("There are no errors!");
   }
 
