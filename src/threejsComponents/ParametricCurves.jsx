@@ -24,9 +24,10 @@ export default function ParametricCurves({
     const maxIntersection = Math.max(...intersection1);
 
     if (
-      intersection1.length > 1 &&
-      minIntersection > cutoffMin &&
-      maxIntersection < cutoffMax
+      (intersection1.length > 1 &&
+        maxIntersection > cutoffMin &&
+        maxIntersection < cutoffMax) ||
+      (minIntersection > cutoffMin && minIntersection < cutoffMax)
     ) {
       effectiveMinX = Math.max(minIntersection, cutoffMin);
       effectiveMaxX = Math.min(maxIntersection, cutoffMax);
