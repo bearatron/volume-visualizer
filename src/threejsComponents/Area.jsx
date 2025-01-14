@@ -31,7 +31,9 @@ export default function Area({
       (intersection1.length > 1 &&
         maxIntersection > cutoffMin &&
         maxIntersection < cutoffMax) ||
-      (minIntersection > cutoffMin && minIntersection < cutoffMax)
+      (minIntersection > cutoffMin &&
+        minIntersection < cutoffMax &&
+        !isZeroFunction(g, cutoffMin, cutoffMax))
     ) {
       effectiveMinX = Math.max(minIntersection, cutoffMin);
       effectiveMaxX = Math.min(maxIntersection, cutoffMax);
