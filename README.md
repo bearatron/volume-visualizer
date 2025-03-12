@@ -1,8 +1,7 @@
-# React + Vite
+# Volume Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[Link](https://volume-visualizer.vercel.app/)
 
-Currently, two official plugins are available:
+A website that helps visualize solids of revolution, 3D objects created by rotating the area between two function around an axis. Created as a culminating project for MCV4U.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The 3D visualization was originally written in three.js ([link to repo](https://github.com/bearatron/volume-visualizer-threejs)) before being translated to React Three Fiber.
